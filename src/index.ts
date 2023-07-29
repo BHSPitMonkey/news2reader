@@ -3,6 +3,7 @@
  * based on items fetched from link aggregators, and EPUBs based on
  * those links upon request.
  */
+import { tmpdir } from 'node:os';
 import querystring from "node:querystring";
 import { URL } from "node:url";
 import express, { Express, Request, Response } from "express";
@@ -64,7 +65,8 @@ app.get("/opds/provider/hackernews", (req: Request, res: Response) => {
   res.send(feed.doc().end({ prettyPrint: true }));
 });
 // HN Acquisition Feeds
-app.get("/opds/provider/hackernews/front", (req: Request, res: Response) => {
+app.get("/opds/provider/hackernews/front", async (req: Request, res: Response) => {
+  // Set up feed
   const feed = create()
     .ele('feed', { xmlns: "http://www.w3.org/2005/Atom" })
     .ele('id').txt('hn').up()
@@ -73,17 +75,72 @@ app.get("/opds/provider/hackernews/front", (req: Request, res: Response) => {
     .ele('link', { rel: 'up', href: '/opds/provider/hackernews', type: 'application/atom+xml;profile=opds-catalog;kind=navigation' }).up()
     .ele('title').txt('Hacker News Front Page').up()
     .ele('updated').txt('2023-07-27T07:26:26.954Z').up();
-  
-  // Add story/URL to the feed
-  const url = "https://factoryfactoryfactory.net/";
-  const title = "Factory Factory Factory";
-  const queryString = querystring.stringify({url});
-  feed.ele('entry')
-  .ele('id').txt('foo').up()
-  .ele('title').txt(title).up()
-  .ele('updated').txt('2023-07-27T07:26:26.954Z').up()
-  .ele('link', { rel: 'http://opds-spec.org/acquisition', href: `/content.epub?${queryString}`, type: 'application/epub+zip' }).up()
 
+  // Fetch stories
+  const maxStories = 15;
+  interface HNSearchHit {
+    author: string,
+    created_at: string,
+    objectId: string,
+    points: number,
+    title: string,
+    url: string,
+    _tags: string[],
+  }
+  interface HNSearchResults {
+    hits: HNSearchHit[],
+    hitsPerPage: number,
+    nbHits: number,
+    nbPages: number,
+    page: number,
+  }
+  const response = await got(
+    "http://hn.algolia.com/api/v1/search?tags=story,front_page"
+  ).json() as HNSearchResults;
+  console.log(response);
+  let results = response.hits
+  .sort((a, b) => {
+    let comparison = 0;
+    if (a.points > b.points) {
+      comparison = 1;
+    } else if (a.points < b.points) {
+      comparison = -1;
+    }
+    return comparison;
+  })
+  .slice(0, maxStories)
+  .map((hit) => {
+    return { title: hit.title, url: hit.url };
+  });
+  console.log(results);
+
+  for (const hit of results) {
+    // Add story/URL to the feed
+    const url = hit.url;
+    const title = hit.title;
+    const queryString = querystring.stringify({url});
+    
+    // Simplistic webpage vs PDF detection
+    let href : string;
+    let type : string;
+    if (url.endsWith(".pdf")) {
+      href = url;
+      type = 'application/pdf';
+    } else {
+      href = `/content.epub?${queryString}`;
+      type = 'application/epub+zip';
+    }
+    
+    feed.ele('entry')
+    .ele('id').txt('foo').up()
+    .ele('title').txt(title).up()
+    //.ele('updated').txt('2023-07-27T07:26:26.954Z').up()
+    .ele('link', { 
+      rel: 'http://opds-spec.org/acquisition', 
+      href,
+      type }).up()
+  }
+  
   res.send(feed.doc().end({ prettyPrint: true }));
 });
 
@@ -146,6 +203,7 @@ app.get("/content.epub", async (req: Request, res: Response) => {
         beforeToc: true,
       },
     ],
+    tempDir: tmpdir(),
   }).promise;
 
   console.log(`EPUB saved to ${outputPath}`);

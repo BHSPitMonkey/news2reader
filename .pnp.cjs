@@ -30,14 +30,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageDependencies": [\
             ["@mozilla/readability", "npm:0.4.4"],\
             ["@types/express", "npm:4.17.17"],\
-            ["@types/got", "npm:9.6.12"],\
             ["@types/jsdom", "npm:21.1.1"],\
             ["@types/node", "npm:20.4.5"],\
             ["concurrently", "npm:8.2.0"],\
             ["epub-gen", "npm:0.1.0"],\
             ["express", "npm:4.18.2"],\
             ["feed", "npm:4.2.2"],\
-            ["got", "npm:13.0.0"],\
+            ["got", "npm:12.6.1"],\
             ["jsdom", "virtual:0bfde77fe5b20e1e5b28fab29f37c9c8d3c1d0ddcb0205b6673211de010accd1fc151fce5afa90381f4c4269fd9da7a117ccbca78d19e8ecfaba31e81d8c35f1#npm:22.1.0"],\
             ["nodemon", "npm:3.0.1"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"],\
@@ -221,18 +220,6 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/qs", "npm:6.9.7"],\
             ["@types/range-parser", "npm:1.2.4"],\
             ["@types/send", "npm:0.17.1"]\
-          ],\
-          "linkType": "HARD"\
-        }]\
-      ]],\
-      ["@types/got", [\
-        ["npm:9.6.12", {\
-          "packageLocation": "./.yarn/cache/@types-got-npm-9.6.12-38103abe77-e6c17cf491.zip/node_modules/@types/got/",\
-          "packageDependencies": [\
-            ["@types/got", "npm:9.6.12"],\
-            ["@types/node", "npm:20.4.5"],\
-            ["@types/tough-cookie", "npm:4.0.2"],\
-            ["form-data", "npm:2.5.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -1760,10 +1747,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["got", [\
-        ["npm:13.0.0", {\
-          "packageLocation": "./.yarn/cache/got-npm-13.0.0-dfca67e32e-bcae6601ef.zip/node_modules/got/",\
+        ["npm:12.6.1", {\
+          "packageLocation": "./.yarn/cache/got-npm-12.6.1-5b6a816a1e-3c37f5d858.zip/node_modules/got/",\
           "packageDependencies": [\
-            ["got", "npm:13.0.0"],\
+            ["got", "npm:12.6.1"],\
             ["@sindresorhus/is", "npm:5.6.0"],\
             ["@szmarczak/http-timer", "npm:5.0.1"],\
             ["cacheable-lookup", "npm:7.0.0"],\
@@ -2647,14 +2634,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["news2odps", "workspace:."],\
             ["@mozilla/readability", "npm:0.4.4"],\
             ["@types/express", "npm:4.17.17"],\
-            ["@types/got", "npm:9.6.12"],\
             ["@types/jsdom", "npm:21.1.1"],\
             ["@types/node", "npm:20.4.5"],\
             ["concurrently", "npm:8.2.0"],\
             ["epub-gen", "npm:0.1.0"],\
             ["express", "npm:4.18.2"],\
             ["feed", "npm:4.2.2"],\
-            ["got", "npm:13.0.0"],\
+            ["got", "npm:12.6.1"],\
             ["jsdom", "virtual:0bfde77fe5b20e1e5b28fab29f37c9c8d3c1d0ddcb0205b6673211de010accd1fc151fce5afa90381f4c4269fd9da7a117ccbca78d19e8ecfaba31e81d8c35f1#npm:22.1.0"],\
             ["nodemon", "npm:3.0.1"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"],\

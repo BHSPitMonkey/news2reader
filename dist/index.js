@@ -4,6 +4,7 @@ var _a;
  * based on items fetched from link aggregators, and EPUBs based on
  * those links upon request.
  */
+import { tmpdir } from 'node:os';
 import querystring from "node:querystring";
 import { URL } from "node:url";
 import express from "express";
@@ -48,10 +49,6 @@ app.get("/opds/provider/hackernews", (req, res) => {
         .ele('link', { rel: 'up', href: '/opds', type: 'application/atom+xml;profile=opds-catalog;kind=navigation' }).up()
         .ele('title').txt('Hacker News').up()
         .ele('updated').txt('2023-07-27T07:26:26.954Z').up();
-    // .ele('author')
-    // .ele('name').txt('news2opds').up()
-    // .ele('uri').txt('https://github.com/BHSPitMonkey/news2opds').up()
-    // .up();
     feed.ele('entry')
         .ele('id').txt('hn').up()
         .ele('title').txt('Front Page').up()
@@ -61,7 +58,8 @@ app.get("/opds/provider/hackernews", (req, res) => {
     res.send(feed.doc().end({ prettyPrint: true }));
 });
 // HN Acquisition Feeds
-app.get("/opds/provider/hackernews/front", (req, res) => {
+app.get("/opds/provider/hackernews/front", async (req, res) => {
+    // Set up feed
     const feed = create()
         .ele('feed', { xmlns: "http://www.w3.org/2005/Atom" })
         .ele('id').txt('hn').up()
@@ -70,13 +68,52 @@ app.get("/opds/provider/hackernews/front", (req, res) => {
         .ele('link', { rel: 'up', href: '/opds/provider/hackernews', type: 'application/atom+xml;profile=opds-catalog;kind=navigation' }).up()
         .ele('title').txt('Hacker News Front Page').up()
         .ele('updated').txt('2023-07-27T07:26:26.954Z').up();
-    const url = "https://factoryfactoryfactory.net/";
-    const queryString = querystring.stringify({ url });
-    feed.ele('entry')
-        .ele('id').txt('foo').up()
-        .ele('title').txt('The Unreasonable Effectiveness of e-Ink').up()
-        .ele('updated').txt('2023-07-27T07:26:26.954Z').up()
-        .ele('link', { rel: 'http://opds-spec.org/acquisition', href: `/content.epub?${queryString}`, type: 'application/epub+zip' }).up();
+    // Fetch stories
+    const maxStories = 15;
+    const response = await got("http://hn.algolia.com/api/v1/search?tags=story,front_page").json();
+    console.log(response);
+    let results = response.hits
+        .sort((a, b) => {
+        let comparison = 0;
+        if (a.points > b.points) {
+            comparison = 1;
+        }
+        else if (a.points < b.points) {
+            comparison = -1;
+        }
+        return comparison;
+    })
+        .slice(0, maxStories)
+        .map((hit) => {
+        return { title: hit.title, url: hit.url };
+    });
+    console.log(results);
+    for (const hit of results) {
+        // Add story/URL to the feed
+        const url = hit.url;
+        const title = hit.title;
+        const queryString = querystring.stringify({ url });
+        // Simplistic webpage vs PDF detection
+        let href;
+        let type;
+        if (url.endsWith(".pdf")) {
+            href = url;
+            type = 'application/pdf';
+        }
+        else {
+            href = `/content.epub?${queryString}`;
+            type = 'application/epub+zip';
+        }
+        feed.ele('entry')
+            .ele('id').txt('foo').up()
+            .ele('title').txt(title).up()
+            //.ele('updated').txt('2023-07-27T07:26:26.954Z').up()
+            .ele('link', {
+            rel: 'http://opds-spec.org/acquisition',
+            href,
+            type
+        }).up();
+    }
     res.send(feed.doc().end({ prettyPrint: true }));
 });
 // Generate and serve an epub based on the 'url' query param
@@ -107,9 +144,11 @@ app.get("/content.epub", async (req, res) => {
         res.status(404).send("Could not retrieve this article");
         return;
     }
-    // TODO: Fail if article is null
-    //console.log(article.title, article.byline, article.length);
-    //console.log(`Writing epub to path ${output_path}`);
+    console.log(`Parsed article:`, {
+        title: article.title,
+        byline: article.byline,
+        length: article.length,
+    });
     const queryTitle = req.query.title;
     const title = (_b = (_a = (typeof queryTitle === "string" ? queryTitle : null)) !== null && _a !== void 0 ? _a : article === null || article === void 0 ? void 0 : article.title) !== null && _b !== void 0 ? _b : 'Title Missing';
     // Build the EPUB at output_path
@@ -126,6 +165,7 @@ app.get("/content.epub", async (req, res) => {
                 beforeToc: true,
             },
         ],
+        tempDir: tmpdir(),
     }).promise;
     console.log(`EPUB saved to ${outputPath}`);
     res.sendFile(outputPath);
