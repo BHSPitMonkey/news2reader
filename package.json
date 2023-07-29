@@ -1,0 +1,28 @@
+{
+  "name": "news2odps",
+  "packageManager": "yarn@3.6.1",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "concurrently \"tsc --watch\" \"nodemon -q dist/index.js\""
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.4.4",
+    "@types/got": "^9.6.12",
+    "@types/jsdom": "^21.1.1",
+    "epub-gen": "^0.1.0",
+    "express": "^4.18.2",
+    "feed": "^4.2.2",
+    "got": "^13.0.0",
+    "jsdom": "^22.1.0",
+    "xmlbuilder2": "^3.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.17",
+    "@types/node": "^20.4.5",
+    "concurrently": "^8.2.0",
+    "nodemon": "^3.0.1",
+    "typescript": "^5.1.6"
+  }
+}
