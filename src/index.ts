@@ -4,13 +4,12 @@
  * those links upon request.
  */
 import fs from "node:fs";
-import querystring from "node:querystring";
 import express, { Express, Request, Response } from "express";
 import xdg from "@folder/xdg";
-import HackerNewsProvider, { getHackerNewsStories } from "./provider/hacker-news.js";
 import { OPDSFeed } from "./opds.js";
 import { articleToEpub } from "./epub.js";
 import PocketProvider from "./provider/pocket.js";
+import HackerNewsProvider from "./provider/hacker-news.js";
 
 //import dotenv from 'dotenv';
 //dotenv.config();
@@ -29,7 +28,7 @@ const catalogAuthor = {
 };
 
 // Initialize providers;
-const hackerNewsProvider = new HackerNewsProvider();
+const hackerNewsProvider = new HackerNewsProvider(app, configDir);
 const pocketProvider = new PocketProvider(app, configDir);
 
 // Catalog Root
@@ -59,82 +58,6 @@ app.get("/opds", (req: Request, res: Response) => {
   ]);
   res.send(feed.toXmlString());
 });
-
-// HN Navigation Feeds
-app.get("/opds/provider/hackernews", (req: Request, res: Response) => {
-  const feed = new OPDSFeed({
-    id: "hn",
-    links: {
-      self: "/opds/provider/hackernews",
-      start: "/opds",
-      up: "/opds",
-    },
-    title: "Hacker News",
-    author: catalogAuthor,
-  });
-  feed.addEntries([
-    {
-      title: "Front Page",
-      id: "hn-front",
-      link: "/opds/provider/hackernews/front",
-      content: "Front page stories from Hacker News",
-    },
-  ]);
-  res.send(feed.toXmlString());
-});
-
-// HN Acquisition Feeds
-app.get(
-  "/opds/provider/hackernews/front",
-  async (req: Request, res: Response) => {
-    const feed = new OPDSFeed({
-      id: "hn-front",
-      links: {
-        self: "/opds/provider/hackernews/front",
-        start: "/opds",
-        up: "/opds/provider/hackernews",
-      },
-      title: "Hacker News Front Page",
-      author: catalogAuthor,
-    }).feed;
-
-    // Fetch stories
-    const results = await getHackerNewsStories();
-    console.log(results);
-
-    for (const hit of results) {
-      // Add story/URL to the feed
-      const url = hit.url;
-      const title = hit.title;
-      const queryString = querystring.stringify({ url });
-
-      // Simplistic webpage vs PDF detection
-      let href: string;
-      let type: string;
-      if (url.endsWith(".pdf")) {
-        href = url;
-        type = "application/pdf";
-      } else {
-        href = `/content.epub?${queryString}`;
-        type = "application/epub+zip";
-      }
-
-      feed
-        .ele("entry")
-          .ele("id").txt("foo").up()
-          .ele("title").txt(title).up()
-          //.ele('updated').txt('2023-07-27T07:26:26.954Z').up()
-          .ele("link", {
-            rel: "http://opds-spec.org/acquisition",
-            href,
-            type,
-          })
-        .up();
-    }
-
-    res.send(feed.doc().end({ prettyPrint: true }));
-  }
-);
 
 // Generate and serve an epub based on the 'url' query param
 app.get("/content.epub", async (req: Request, res: Response) => {
