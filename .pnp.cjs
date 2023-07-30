@@ -12,14 +12,14 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     ],\
     "dependencyTreeRoots": [\
       {\
-        "name": "news2odps",\
+        "name": "news2reader",\
         "reference": "workspace:."\
       }\
     ],\
     "enableTopLevelFallback": true,\
     "ignorePatternData": "(^(?:\\\\.yarn\\\\/sdks(?:\\\\/(?!\\\\.{1,2}(?:\\\\/|$))(?:(?:(?!(?:^|\\\\/)\\\\.{1,2}(?:\\\\/|$)).)*?)|$))$)",\
     "fallbackExclusionList": [\
-      ["news2odps", ["workspace:."]]\
+      ["news2reader", ["workspace:."]]\
     ],\
     "fallbackPool": [\
     ],\
@@ -37,7 +37,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["express", "npm:4.18.2"],\
             ["feed", "npm:4.2.2"],\
             ["got", "npm:12.6.1"],\
-            ["jsdom", "virtual:0bfde77fe5b20e1e5b28fab29f37c9c8d3c1d0ddcb0205b6673211de010accd1fc151fce5afa90381f4c4269fd9da7a117ccbca78d19e8ecfaba31e81d8c35f1#npm:22.1.0"],\
+            ["jsdom", "virtual:1c70d8e181737d5ab39c4d8abcf877d4935835cff8dbf876c1e1cec646046c8ec891c0654f862bb1538b798be313c6cdee86426894f1f831e3428f7823990ff4#npm:22.1.0"],\
             ["nodemon", "npm:3.0.1"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"],\
             ["xmlbuilder2", "npm:3.1.1"]\
@@ -2125,10 +2125,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:0bfde77fe5b20e1e5b28fab29f37c9c8d3c1d0ddcb0205b6673211de010accd1fc151fce5afa90381f4c4269fd9da7a117ccbca78d19e8ecfaba31e81d8c35f1#npm:22.1.0", {\
-          "packageLocation": "./.yarn/__virtual__/jsdom-virtual-458a4886d4/0/cache/jsdom-npm-22.1.0-1ae0e70a97-d955ab83a6.zip/node_modules/jsdom/",\
+        ["virtual:1c70d8e181737d5ab39c4d8abcf877d4935835cff8dbf876c1e1cec646046c8ec891c0654f862bb1538b798be313c6cdee86426894f1f831e3428f7823990ff4#npm:22.1.0", {\
+          "packageLocation": "./.yarn/__virtual__/jsdom-virtual-4122dd5922/0/cache/jsdom-npm-22.1.0-1ae0e70a97-d955ab83a6.zip/node_modules/jsdom/",\
           "packageDependencies": [\
-            ["jsdom", "virtual:0bfde77fe5b20e1e5b28fab29f37c9c8d3c1d0ddcb0205b6673211de010accd1fc151fce5afa90381f4c4269fd9da7a117ccbca78d19e8ecfaba31e81d8c35f1#npm:22.1.0"],\
+            ["jsdom", "virtual:1c70d8e181737d5ab39c4d8abcf877d4935835cff8dbf876c1e1cec646046c8ec891c0654f862bb1538b798be313c6cdee86426894f1f831e3428f7823990ff4#npm:22.1.0"],\
             ["@types/canvas", null],\
             ["abab", "npm:2.0.6"],\
             ["canvas", null],\
@@ -2152,7 +2152,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["whatwg-encoding", "npm:2.0.0"],\
             ["whatwg-mimetype", "npm:3.0.0"],\
             ["whatwg-url", "npm:12.0.1"],\
-            ["ws", "virtual:458a4886d4ede1af1ea55eb8802ae577151f1fdbb52f0b89efa9e711e1f853c744ffae0b6bf71ab533beaf26ef254a9938bbf973ee8da07d3b70432ecf949b68#npm:8.13.0"],\
+            ["ws", "virtual:4122dd59223afba26c4c87487df37111a488d50f036ea25be4e6c943958f786d4a86dbc7ca388c34e427b4952c8cd3c2b70dffa048772fa12b1212f6023d83a4#npm:8.13.0"],\
             ["xml-name-validator", "npm:4.0.0"]\
           ],\
           "packagePeers": [\
@@ -2627,11 +2627,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "linkType": "HARD"\
         }]\
       ]],\
-      ["news2odps", [\
+      ["news2reader", [\
         ["workspace:.", {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["news2odps", "workspace:."],\
+            ["news2reader", "workspace:."],\
             ["@mozilla/readability", "npm:0.4.4"],\
             ["@types/express", "npm:4.17.17"],\
             ["@types/jsdom", "npm:21.1.1"],\
@@ -2641,7 +2641,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["express", "npm:4.18.2"],\
             ["feed", "npm:4.2.2"],\
             ["got", "npm:12.6.1"],\
-            ["jsdom", "virtual:0bfde77fe5b20e1e5b28fab29f37c9c8d3c1d0ddcb0205b6673211de010accd1fc151fce5afa90381f4c4269fd9da7a117ccbca78d19e8ecfaba31e81d8c35f1#npm:22.1.0"],\
+            ["jsdom", "virtual:1c70d8e181737d5ab39c4d8abcf877d4935835cff8dbf876c1e1cec646046c8ec891c0654f862bb1538b798be313c6cdee86426894f1f831e3428f7823990ff4#npm:22.1.0"],\
             ["nodemon", "npm:3.0.1"],\
             ["typescript", "patch:typescript@npm%3A5.1.6#~builtin<compat/typescript>::version=5.1.6&hash=5da071"],\
             ["xmlbuilder2", "npm:3.1.1"]\
@@ -3824,10 +3824,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           ],\
           "linkType": "SOFT"\
         }],\
-        ["virtual:458a4886d4ede1af1ea55eb8802ae577151f1fdbb52f0b89efa9e711e1f853c744ffae0b6bf71ab533beaf26ef254a9938bbf973ee8da07d3b70432ecf949b68#npm:8.13.0", {\
-          "packageLocation": "./.yarn/__virtual__/ws-virtual-e2d6c0db90/0/cache/ws-npm-8.13.0-26ffa3016a-53e991bbf9.zip/node_modules/ws/",\
+        ["virtual:4122dd59223afba26c4c87487df37111a488d50f036ea25be4e6c943958f786d4a86dbc7ca388c34e427b4952c8cd3c2b70dffa048772fa12b1212f6023d83a4#npm:8.13.0", {\
+          "packageLocation": "./.yarn/__virtual__/ws-virtual-c220b1252f/0/cache/ws-npm-8.13.0-26ffa3016a-53e991bbf9.zip/node_modules/ws/",\
           "packageDependencies": [\
-            ["ws", "virtual:458a4886d4ede1af1ea55eb8802ae577151f1fdbb52f0b89efa9e711e1f853c744ffae0b6bf71ab533beaf26ef254a9938bbf973ee8da07d3b70432ecf949b68#npm:8.13.0"],\
+            ["ws", "virtual:4122dd59223afba26c4c87487df37111a488d50f036ea25be4e6c943958f786d4a86dbc7ca388c34e427b4952c8cd3c2b70dffa048772fa12b1212f6023d83a4#npm:8.13.0"],\
             ["@types/bufferutil", null],\
             ["@types/utf-8-validate", null],\
             ["bufferutil", null],\

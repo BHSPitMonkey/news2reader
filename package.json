@@ -1,11 +1,14 @@
 {
-  "name": "news2odps",
+  "name": "news2reader",
   "packageManager": "yarn@3.6.1",
   "type": "module",
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "concurrently \"tsc --watch\" \"nodemon -q dist/index.js\""
+  },
+  "exports": {
+    "./src/provider/hacker-news": "./dist/src/provider/hacker-news.js"
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.4",
