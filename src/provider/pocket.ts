@@ -1,7 +1,8 @@
-import querystring from "node:querystring";
 import fs from "node:fs";
+import path from "node:path";
+import querystring from "node:querystring";
 import got from "got";
-import express, { Express, Request, Response } from "express";
+import { Express, Request, Response } from "express";
 import { OPDSFeed } from "../opds.js";
 
 interface OAuthCodeResponse {
@@ -13,17 +14,40 @@ interface OAuthAccessTokenResponse {
     username: string;
 }
 
+/**
+ * Params accepted by the Pocket's /get API (subset we care about)
+ */
+interface PocketApiSearchParams {
+    contentType?: "article",
+    count?: number,
+    detailType?: "simple",
+    favorite?: "0" | "1",
+    sort?: "newest",
+    state?: "all" | "unread",
+}
+
+/**
+ * Internal description of a Pocket catalog feed
+ */
+interface FeedDescription {
+    name: string,
+    id: string,
+    description: string,
+    searchParams: PocketApiSearchParams,
+}
+
 export default class PocketProvider {
-  private consumer_key: string;
   private code: string | null;
   private accessToken: string | null;
+  private authConfigPath: string;
 
-  private readonly BASE_SEARCH_PARAMS = {
+  private readonly CONSUMER_KEY = "108332-4cb01719bb01deabce69438";
+  private readonly BASE_SEARCH_PARAMS: PocketApiSearchParams = {
     contentType: "article",
     detailType: "simple",
     count: 15,
   };
-  private readonly FEEDS = [
+  private readonly FEEDS: FeedDescription[] = [
     {
       name: "All Items",
       id: "all",
@@ -54,14 +78,14 @@ export default class PocketProvider {
     },
   ];
 
-  public constructor(app: Express) {
-    this.consumer_key = "108332-4cb01719bb01deabce69438";
+  public constructor(app: Express, configDir: string) {
     this.code = null;
     this.registerRoutes(app);
 
+    this.authConfigPath = path.join(configDir, 'pocketauth');
     this.accessToken = null; // TODO: Load from storage if exists already
-    if (fs.existsSync('.pocketauth')) {
-        const pocketauth = fs.readFileSync(".pocketauth").toString();
+    if (fs.existsSync(this.authConfigPath)) {
+        const pocketauth = fs.readFileSync(this.authConfigPath).toString();
         if (pocketauth.length > 0) {
             console.log("Using stored Pocket access token");
             this.accessToken = pocketauth;
@@ -72,28 +96,6 @@ export default class PocketProvider {
   public isEnabled() {
     // TODO: Only true if consumer key is set
     return true;
-  }
-
-  public getArticles() {
-    // pocket.getRequestToken()
-    //     .then(reponse => {
-    //         console.log(response)
-    //         //returns request_token
-    //     })
-    // // Once you have you have recieved you request token, you have to send you user to the getPocket site
-    // // It must also include a redirect URL, example:
-    // // https://getpocket.com/auth/authorize?request_token=YOUR_REQUEST_TOKEN&redirect_uri=YOUR_REDIRECT_URI
-    // // Please refer to the getPocket API site
-    // pocket.getAccessToken()
-    //     .then(response => {
-    //         console.log(repsonse);
-    //         // returns access token
-    //     });
-    // pocket.getArticles(parameter_object)
-    //     .then(response => {
-    //         console.log(response);
-    //         //Returns articles
-    //     });
   }
 
   private registerRoutes(app: Express) {
@@ -112,7 +114,7 @@ export default class PocketProvider {
               "X-Accept": "application/json",
             },
             json: {
-              consumer_key: this.consumer_key,
+              consumer_key: this.CONSUMER_KEY,
               redirect_uri: redirectUrl,
             },
           })
@@ -142,7 +144,7 @@ export default class PocketProvider {
               "X-Accept": "application/json",
             },
             json: {
-              consumer_key: this.consumer_key,
+              consumer_key: this.CONSUMER_KEY,
               code: this.code,
             },
           })
@@ -216,7 +218,7 @@ export default class PocketProvider {
     }
   }
 
-  private async getStories(searchParams) {
+  private async getStories(searchParams: PocketApiSearchParams) {
     const data = await got
       .post("https://getpocket.com/v3/get", {
         headers: {
@@ -224,7 +226,7 @@ export default class PocketProvider {
           "X-Accept": "application/json",
         },
         json: {
-            consumer_key: this.consumer_key,
+            consumer_key: this.CONSUMER_KEY,
             access_token: this.accessToken,
             ...searchParams,
         },
@@ -242,7 +244,8 @@ export default class PocketProvider {
 
   private setAccessToken(token: string) {
     this.accessToken = token;
-    // TODO: Persist token in storage somewhere restricted
-    fs.writeFileSync(".pocketauth", token);
+    
+    // Persist the access token into the config dir
+    fs.writeFileSync(this.authConfigPath, token);
   }
 }

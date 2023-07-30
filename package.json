@@ -12,6 +12,7 @@
     "./src/provider/pocket": "./dist/src/provider/pocket.js"
   },
   "dependencies": {
+    "@folder/xdg": "^4.0.0",
     "@mozilla/readability": "^0.4.4",
     "@types/jsdom": "^21.1.1",
     "epub-gen": "^0.1.0",

@@ -1,9 +1,11 @@
-import querystring from "node:querystring";
 import fs from "node:fs";
+import path from "node:path";
+import querystring from "node:querystring";
 import got from "got";
 import { OPDSFeed } from "../opds.js";
 export default class PocketProvider {
-    constructor(app) {
+    constructor(app, configDir) {
+        this.CONSUMER_KEY = "108332-4cb01719bb01deabce69438";
         this.BASE_SEARCH_PARAMS = {
             contentType: "article",
             detailType: "simple",
@@ -39,12 +41,12 @@ export default class PocketProvider {
                 },
             },
         ];
-        this.consumer_key = "108332-4cb01719bb01deabce69438";
         this.code = null;
         this.registerRoutes(app);
+        this.authConfigPath = path.join(configDir, 'pocketauth');
         this.accessToken = null; // TODO: Load from storage if exists already
-        if (fs.existsSync('.pocketauth')) {
-            const pocketauth = fs.readFileSync(".pocketauth").toString();
+        if (fs.existsSync(this.authConfigPath)) {
+            const pocketauth = fs.readFileSync(this.authConfigPath).toString();
             if (pocketauth.length > 0) {
                 console.log("Using stored Pocket access token");
                 this.accessToken = pocketauth;
@@ -54,27 +56,6 @@ export default class PocketProvider {
     isEnabled() {
         // TODO: Only true if consumer key is set
         return true;
-    }
-    getArticles() {
-        // pocket.getRequestToken()
-        //     .then(reponse => {
-        //         console.log(response)
-        //         //returns request_token
-        //     })
-        // // Once you have you have recieved you request token, you have to send you user to the getPocket site
-        // // It must also include a redirect URL, example:
-        // // https://getpocket.com/auth/authorize?request_token=YOUR_REQUEST_TOKEN&redirect_uri=YOUR_REDIRECT_URI
-        // // Please refer to the getPocket API site
-        // pocket.getAccessToken()
-        //     .then(response => {
-        //         console.log(repsonse);
-        //         // returns access token
-        //     });
-        // pocket.getArticles(parameter_object)
-        //     .then(response => {
-        //         console.log(response);
-        //         //Returns articles
-        //     });
     }
     registerRoutes(app) {
         app.get("/pocket/setup", async (req, res) => {
@@ -92,7 +73,7 @@ export default class PocketProvider {
                         "X-Accept": "application/json",
                     },
                     json: {
-                        consumer_key: this.consumer_key,
+                        consumer_key: this.CONSUMER_KEY,
                         redirect_uri: redirectUrl,
                     },
                 })
@@ -123,7 +104,7 @@ export default class PocketProvider {
                         "X-Accept": "application/json",
                     },
                     json: {
-                        consumer_key: this.consumer_key,
+                        consumer_key: this.CONSUMER_KEY,
                         code: this.code,
                     },
                 })
@@ -191,7 +172,7 @@ export default class PocketProvider {
                 Accept: "*/*",
                 "X-Accept": "application/json",
             },
-            json: Object.assign({ consumer_key: this.consumer_key, access_token: this.accessToken }, searchParams),
+            json: Object.assign({ consumer_key: this.CONSUMER_KEY, access_token: this.accessToken }, searchParams),
         })
             .json();
         console.log("Got Pocket data:", data);
@@ -205,7 +186,7 @@ export default class PocketProvider {
     }
     setAccessToken(token) {
         this.accessToken = token;
-        // TODO: Persist token in storage somewhere restricted
-        fs.writeFileSync(".pocketauth", token);
+        // Persist the access token into the config dir
+        fs.writeFileSync(this.authConfigPath, token);
     }
 }

@@ -3,8 +3,10 @@
  * based on items fetched from link aggregators, and EPUBs based on
  * those links upon request.
  */
+import fs from "node:fs";
 import querystring from "node:querystring";
 import express, { Express, Request, Response } from "express";
+import xdg from "@folder/xdg";
 import HackerNewsProvider, { getHackerNewsStories } from "./provider/hacker-news.js";
 import { OPDSFeed } from "./opds.js";
 import { articleToEpub } from "./epub.js";
@@ -12,6 +14,11 @@ import PocketProvider from "./provider/pocket.js";
 
 //import dotenv from 'dotenv';
 //dotenv.config();
+const dirs = xdg({
+  subdir: "news2reader",
+});
+const configDir = dirs.config;
+fs.mkdirSync(configDir, {recursive: true});
 
 const app: Express = express();
 const port = process.env.PORT ?? 8080;
@@ -21,8 +28,9 @@ const catalogAuthor = {
   uri: "https://github.com/BHSPitMonkey/news2reader",
 };
 
+// Initialize providers;
 const hackerNewsProvider = new HackerNewsProvider();
-const pocketProvider = new PocketProvider(app);
+const pocketProvider = new PocketProvider(app, configDir);
 
 // Catalog Root
 app.get("/opds", (req: Request, res: Response) => {
