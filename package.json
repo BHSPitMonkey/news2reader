@@ -8,7 +8,8 @@
     "dev": "concurrently \"tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "exports": {
-    "./src/provider/hacker-news": "./dist/src/provider/hacker-news.js"
+    "./src/provider/hacker-news": "./dist/src/provider/hacker-news.js",
+    "./src/provider/pocket": "./dist/src/provider/pocket.js"
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.4",

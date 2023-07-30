@@ -6,9 +6,10 @@ var _a;
  */
 import querystring from "node:querystring";
 import express from "express";
-import { getHackerNewsStories } from "./provider/hacker-news.js";
+import HackerNewsProvider, { getHackerNewsStories } from "./provider/hacker-news.js";
 import { OPDSFeed } from "./opds.js";
 import { articleToEpub } from "./epub.js";
+import PocketProvider from "./provider/pocket.js";
 //import dotenv from 'dotenv';
 //dotenv.config();
 const app = express();
@@ -17,6 +18,8 @@ const catalogAuthor = {
     name: "news2reader",
     uri: "https://github.com/BHSPitMonkey/news2reader",
 };
+const hackerNewsProvider = new HackerNewsProvider();
+const pocketProvider = new PocketProvider(app);
 // Catalog Root
 app.get("/opds", (req, res) => {
     const feed = new OPDSFeed({
@@ -35,12 +38,12 @@ app.get("/opds", (req, res) => {
             link: "/opds/provider/hackernews",
             content: "Stories from Hacker News",
         },
-        // {
-        //   title: "Pocket",
-        //   id: "pocket",
-        //   link: "/opds/provider/pocket",
-        //   content: "Saved articles from your Pocket account",
-        // },
+        {
+            title: "Pocket",
+            id: "pocket",
+            link: "/opds/provider/pocket",
+            content: "Saved articles from your Pocket account",
+        },
     ]);
     res.send(feed.toXmlString());
 });

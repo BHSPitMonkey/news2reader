@@ -22,3 +22,5 @@ export async function getHackerNewsStories() {
     console.log(results);
     return results;
 }
+export default class HackerNewsProvider {
+}
