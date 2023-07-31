@@ -83,7 +83,7 @@ export default class PocketProvider {
     this.registerRoutes(app);
 
     this.authConfigPath = path.join(configDir, 'pocketauth');
-    this.accessToken = null; // TODO: Load from storage if exists already
+    this.accessToken = null;
     if (fs.existsSync(this.authConfigPath)) {
         const pocketauth = fs.readFileSync(this.authConfigPath).toString();
         if (pocketauth.length > 0) {
@@ -93,19 +93,13 @@ export default class PocketProvider {
     }
   }
 
-  public isEnabled() {
-    // TODO: Only true if consumer key is set
-    return true;
+  public isConnected() {
+    return (typeof this.accessToken === "string");
   }
 
   private registerRoutes(app: Express) {
     app.get("/pocket/setup", async (req: Request, res: Response) => {
-      //console.warn(req);
       const redirectUrl = `http://${req.headers.host}/pocket/oauth`;
-      // const resp = await this.pocket.getRequestToken({url}, (_: null, authParams: any) => {
-      //     console.log("ASDF", authParams.redirectUrl);
-      //     return authParams.redirectUrl;
-      // });
       try {
         const data = (await got
           .post("https://getpocket.com/v3/oauth/request", {
@@ -184,7 +178,7 @@ export default class PocketProvider {
           };
         })
       );
-      res.send(feed.toXmlString());
+      res.type('application/xml').send(feed.toXmlString());
     });
 
     // Acquisition feeds
@@ -212,7 +206,7 @@ export default class PocketProvider {
           for (const story of stories) {
             feed.addArticleAcquisitionEntry(story.url, story.title);
           }
-          res.send(feed.toXmlString());
+          res.type('application/xml').send(feed.toXmlString());
         }
       );
     }

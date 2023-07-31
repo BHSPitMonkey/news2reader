@@ -26,7 +26,7 @@ interface HNSearchParams {
 }
 
 /**
- * Internal description of a Pocket catalog feed
+ * Internal description of a Hacker News catalog feed
  */
 interface FeedDescription {
     name: string,
@@ -98,13 +98,13 @@ export default class HackerNewsProvider {
             this.FEEDS.map((entry) => {
               return {
                 title: entry.name,
-                id: `pocket-${entry.id}`,
+                id: `hackernews-${entry.id}`,
                 link: `/opds/provider/hackernews/${entry.id}`,
                 content: entry.description,
               };
             })
           );
-          res.send(feed.toXmlString());
+          res.type('application/xml').send(feed.toXmlString());
         });
     
         // Acquisition feeds
@@ -128,7 +128,7 @@ export default class HackerNewsProvider {
               for (const story of stories) {
                 feed.addArticleAcquisitionEntry(story.url, story.title);
               }
-              res.send(feed.toXmlString());
+              res.type('application/xml').send(feed.toXmlString());
             }
           );
         }

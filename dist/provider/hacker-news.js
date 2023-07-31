@@ -60,12 +60,12 @@ export default class HackerNewsProvider {
             feed.addEntries(this.FEEDS.map((entry) => {
                 return {
                     title: entry.name,
-                    id: `pocket-${entry.id}`,
+                    id: `hackernews-${entry.id}`,
                     link: `/opds/provider/hackernews/${entry.id}`,
                     content: entry.description,
                 };
             }));
-            res.send(feed.toXmlString());
+            res.type('application/xml').send(feed.toXmlString());
         });
         // Acquisition feeds
         for (const entry of this.FEEDS) {
@@ -85,7 +85,7 @@ export default class HackerNewsProvider {
                 for (const story of stories) {
                     feed.addArticleAcquisitionEntry(story.url, story.title);
                 }
-                res.send(feed.toXmlString());
+                res.type('application/xml').send(feed.toXmlString());
             });
         }
     }

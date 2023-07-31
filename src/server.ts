@@ -56,7 +56,7 @@ app.get("/opds", (req: Request, res: Response) => {
       content: "Saved articles from your Pocket account",
     },
   ]);
-  res.send(feed.toXmlString());
+  res.type('application/xml').send(feed.toXmlString());
 });
 
 // Generate and serve an epub based on the 'url' query param
@@ -79,6 +79,44 @@ app.get("/content.epub", async (req: Request, res: Response) => {
     res.status(404).send("Could not retrieve this article");
     return;
   }
+});
+
+// Generate and serve an epub based on the 'url' query param
+app.get("/", async (req: Request, res: Response) => {
+  let pocketHtml;
+  if (pocketProvider.isConnected()) {
+    pocketHtml = `<p>Connected! <a href="/pocket/setup">Switch to another Pocket account</a></p>`;
+  } else {
+    pocketHtml = `<p>Not connected. <a href="/pocket/setup">Connect to Pocket</a></p>`;
+  }
+  const body = `
+  <html>
+  <head>
+    <title>news2reader server</title>
+    <style>
+      html { background: #ddd; }
+      body { background: #eee; font-family:sans-serif; max-width: 800px; margin: 22px auto; padding: 22px; }
+    </style>
+  </head>
+  <body>
+    <h1>news2reader server</h1>
+    <p>Learn more on GitHub: <a href="https://github.com/BHSPitMonkey/news2reader">BHSPitMonkey/news2reader</a></p>
+    <h2>Add to your e-reader</h2>
+    <p>
+      Add this server as an OPDS Catalog in supported e-reader software (such as koreader)
+      using the <code>/opds</code> URI.
+    </p>
+    <p>For example, <code>http://localhost:8080/opds</code> 
+      (substitute <code>localhost:8080</code> if you are using a different host or port.)
+    </p>
+    <h2>Connected accounts</h2>
+    <h3>Hacker News</h3>
+    <p>Not yet supported</h3>
+    <h3>Pocket</h3>
+    ${pocketHtml}
+  </body>
+  `;
+  res.send(body);
 });
 
 app.use((req, res, next) => {
