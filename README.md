@@ -1,7 +1,7 @@
 # news2reader
 
 Server that offers webpages from popular news aggregators as EPUB files via ODPS,
-for consumption via e-reader software (such as koreader).
+for consumption via e-reader software (such as [KOReader](https://koreader.rocks/)).
 
 ## What it does
 
