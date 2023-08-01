@@ -124,7 +124,6 @@ export default class HackerNewsProvider {
     
               // Fetch stories
               const stories = await this.getStories(entry.searchParams, entry.lookbackDays);
-              console.log("Got stories:", stories);
               for (const story of stories) {
                 feed.addArticleAcquisitionEntry(story.url, story.title);
               }

@@ -202,7 +202,6 @@ export default class PocketProvider {
             ...entry.searchParams,
           };
           const stories = await this.getStories(combinedSearchParams);
-          console.log("Got stories:", stories);
           for (const story of stories) {
             feed.addArticleAcquisitionEntry(story.url, story.title);
           }
