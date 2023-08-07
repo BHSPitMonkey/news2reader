@@ -5,9 +5,9 @@ LABEL org.opencontainers.image.description=" Serve online articles directly to y
 LABEL org.opencontainers.image.licenses=MIT
 
 WORKDIR /usr/src/app
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc ./
 RUN yarn install --immutable
 COPY dist/ ./dist/
 
 EXPOSE 8080
-CMD [ "node", "dist/server.js" ]
+CMD [ "yarn", "start" ]
