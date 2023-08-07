@@ -57,11 +57,12 @@ export class OPDSFeed {
       const queryString = querystring.stringify({ url });
 
       // Simplistic webpage vs PDF detection
-      let href: string;
+      let href = url;
       let type: string;
       if (url.endsWith(".pdf")) {
-        href = url;
         type = "application/pdf";
+      } else if (url.endsWith(".epub")) {
+        type = "application/epub+zip";
       } else {
         href = `/content.epub?${queryString}`;
         type = "application/epub+zip";
