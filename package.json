@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/server.js",
-    "dev": "concurrently \"tsc --watch\" \"nodemon -q dist/server.js\""
+    "dev": "VERBOSE=1 concurrently \"tsc --watch\" \"nodemon -q dist/server.js\""
   },
   "exports": {
     "./src/provider/hacker-news": "./dist/src/provider/hacker-news.js",
