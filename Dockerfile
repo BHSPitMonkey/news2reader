@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.description=" Serve online articles directly to y
 LABEL org.opencontainers.image.licenses=MIT
 
 WORKDIR /usr/src/app
-COPY package.json yarn.lock .yarnrc ./
+COPY package.json yarn.lock .yarnrc.yml ./
 RUN yarn install --immutable
 COPY dist/ ./dist/
 
