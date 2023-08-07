@@ -1,5 +1,6 @@
 {
   "name": "news2reader",
+  "license": "MIT",
   "packageManager": "yarn@3.6.1",
   "type": "module",
   "scripts": {
