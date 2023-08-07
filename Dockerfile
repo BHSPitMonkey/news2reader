@@ -5,8 +5,10 @@ LABEL org.opencontainers.image.description=" Serve online articles directly to y
 LABEL org.opencontainers.image.licenses=MIT
 
 WORKDIR /usr/src/app
-COPY package.json yarn.lock .yarnrc.yml ./
-RUN yarn install --immutable
+COPY package.json yarn.lock ./
+
+# Note: The node:18 image ships with Yarn 1.x, not 2/3
+RUN yarn install --immutable --network-timeout 600000
 COPY dist/ ./dist/
 
 EXPOSE 8080
