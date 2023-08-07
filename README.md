@@ -65,7 +65,7 @@ You will need to mount a config directory at `/root/.config/news2reader/` in the
 
 ```shell
 yarn install
-yarn run start
+yarn start
 ```
 
 ## How to use it
