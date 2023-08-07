@@ -20,6 +20,14 @@ const configDir = dirs.config;
 fs.mkdirSync(configDir, { recursive: true });
 const app = express();
 const port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 8080;
+// Basic request/response logging
+app.use((req, res, next) => {
+    res.on('finish', () => {
+        const now = (new Date()).toISOString();
+        console.log(`${now} ${req.method} ${req.url} (HTTP ${res.statusCode})`);
+    });
+    next();
+});
 const catalogAuthor = {
     name: "news2reader",
     uri: "https://github.com/BHSPitMonkey/news2reader",
