@@ -10,6 +10,7 @@ export default class HackerNewsProvider {
                 description: "Stories from the Hacker News front page",
                 searchParams: {
                     tags: "story,front_page",
+                    numericFilters: null,
                 },
             },
             {
@@ -81,7 +82,6 @@ export default class HackerNewsProvider {
                 });
                 // Fetch stories
                 const stories = await this.getStories(entry.searchParams, entry.lookbackDays);
-                console.log("Got stories:", stories);
                 for (const story of stories) {
                     feed.addArticleAcquisitionEntry(story.url, story.title);
                 }
@@ -91,17 +91,22 @@ export default class HackerNewsProvider {
     }
     async getStories(searchParams, lookbackDays) {
         // Fetch stories
-        const maxStories = 30;
+        const maxStories = 60;
         let queryString = querystring.stringify(searchParams);
+        queryString += `&hitsPerPage=${maxStories}`;
         if (typeof lookbackDays === "number") {
             const currentTimestamp = Math.floor(Date.now() / 1000);
             const lookbackTimeStamp = currentTimestamp - (lookbackDays * 24 * 60 * 60);
             queryString = queryString.replace("TIMESTAMP", `${lookbackTimeStamp}`);
         }
-        console.log("Searching HN with query", queryString);
+        if (process.env.VERBOSE) {
+            console.log("Searching HN with query", queryString);
+        }
         const searchUrl = `http://hn.algolia.com/api/v1/search?${queryString}`;
         const response = await got(searchUrl).json();
-        console.log(response);
+        if (process.env.VERBOSE) {
+            console.log(response);
+        }
         let results = response.hits
             .sort((a, b) => {
             let comparison = 0;
@@ -113,12 +118,13 @@ export default class HackerNewsProvider {
             }
             return comparison;
         })
-            .slice(0, maxStories)
             .filter(hit => typeof hit.url === "string")
             .map((hit) => {
             return { title: hit.title, url: hit.url };
         });
-        console.log(results);
+        if (process.env.VERBOSE) {
+            console.log(results);
+        }
         return results;
     }
 }
