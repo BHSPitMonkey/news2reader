@@ -1,6 +1,7 @@
 import querystring from "node:querystring";
 import { create } from "xmlbuilder2";
 import { XMLBuilder } from "xmlbuilder2/lib/interfaces";
+import { nameFromUrlPath } from "./util.js";
 
 const LINK_TYPE_NAVIGATION = 'application/atom+xml;profile=opds-catalog;kind=navigation';
 
@@ -56,7 +57,7 @@ export class OPDSFeed {
     addArticleAcquisitionEntry(url: string, title: string) {
       const queryString = querystring.stringify({ url });
 
-      // Simplistic webpage vs PDF detection
+      // Simplistic PDF/EPUB detection (skip conversion when URL ends in these extensions)
       let href = url;
       let type: string;
       if (url.endsWith(".pdf")) {
@@ -68,9 +69,15 @@ export class OPDSFeed {
         type = "application/epub+zip";
       }
 
+      // Title cleanup
+      let finalTitle = title.trim();
+      if (finalTitle === "") {
+        finalTitle = nameFromUrlPath(url);
+      }
+
       this.feed.ele("entry")
         .ele("id").txt("foo").up()
-        .ele("title").txt(title).up()
+        .ele("title").txt(finalTitle).up()
         //.ele('updated').txt('2023-07-27T07:26:26.954Z').up()
         .ele("link", {
           rel: "http://opds-spec.org/acquisition",
