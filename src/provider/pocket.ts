@@ -26,6 +26,25 @@ interface PocketApiSearchParams {
     state?: "all" | "unread",
 }
 
+interface PocketApiItem {
+  item_id: string,
+  resolved_id: string,
+  given_url: string,
+  given_title: string,
+  favorite: string,
+  sort_id: number,
+  status: string,
+  time_added: string,
+  time_updated: string,
+  resolved_title: string,
+  resolved_url: string,
+  is_article: string,
+  is_index: string,
+  word_count: string,
+};
+
+interface PocketApiItemList { [key: string]: PocketApiItem; }
+
 /**
  * Internal description of a Pocket catalog feed
  */
@@ -43,9 +62,8 @@ export default class PocketProvider {
 
   private readonly CONSUMER_KEY = "108332-4cb01719bb01deabce69438";
   private readonly BASE_SEARCH_PARAMS: PocketApiSearchParams = {
-    contentType: "article",
     detailType: "simple",
-    count: 15,
+    count: 60,
   };
   private readonly FEEDS: FeedDescription[] = [
     {
@@ -224,13 +242,30 @@ export default class PocketProvider {
             ...searchParams,
         },
       })
-      .json() as {list: object};
-    console.log("Got Pocket data:", data);
-    return Object.entries(data.list).map(entry => {
-        const [item_id, item] = entry;
+      .json() as {list: PocketApiItemList}; // fixme: better type
+    
+    if (process.env.VERBOSE) {
+      console.log("Using search params:", searchParams);
+      console.log("Got Pocket data:", data);
+    }
+    return Object.entries(data.list).sort((a , b) => {
+      const [, itemA] = a;
+      const [, itemB] = b;
+      const timeA = parseInt(itemA.time_added);
+      const timeB = parseInt(itemB.time_added);
+      if (timeA < timeB) {
+        return 1;
+      }
+      if (timeA > timeB) {
+        return -1;
+      }
+      return 0;
+    }).map(entry => {
+      const [, item] = entry;
+        const title = item.resolved_title ? item.resolved_title : item.given_title;
         return {
-            title: item.resolved_title,
-            url: item.resolved_url,
+            title,
+            url: item.given_url,
         };
     });
   }

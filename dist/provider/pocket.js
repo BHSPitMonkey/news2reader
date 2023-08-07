@@ -3,13 +3,13 @@ import path from "node:path";
 import querystring from "node:querystring";
 import got from "got";
 import { OPDSFeed } from "../opds.js";
+;
 export default class PocketProvider {
     constructor(app, configDir) {
         this.CONSUMER_KEY = "108332-4cb01719bb01deabce69438";
         this.BASE_SEARCH_PARAMS = {
-            contentType: "article",
             detailType: "simple",
-            count: 15,
+            count: 60,
         };
         this.FEEDS = [
             {
@@ -151,7 +151,6 @@ export default class PocketProvider {
                 // Fetch stories
                 const combinedSearchParams = Object.assign(Object.assign({}, this.BASE_SEARCH_PARAMS), entry.searchParams);
                 const stories = await this.getStories(combinedSearchParams);
-                console.log("Got stories:", stories);
                 for (const story of stories) {
                     feed.addArticleAcquisitionEntry(story.url, story.title);
                 }
@@ -168,13 +167,29 @@ export default class PocketProvider {
             },
             json: Object.assign({ consumer_key: this.CONSUMER_KEY, access_token: this.accessToken }, searchParams),
         })
-            .json();
-        console.log("Got Pocket data:", data);
-        return Object.entries(data.list).map(entry => {
-            const [item_id, item] = entry;
+            .json(); // fixme: better type
+        if (process.env.VERBOSE) {
+            console.log("Using search params:", searchParams);
+            console.log("Got Pocket data:", data);
+        }
+        return Object.entries(data.list).sort((a, b) => {
+            const [, itemA] = a;
+            const [, itemB] = b;
+            const timeA = parseInt(itemA.time_added);
+            const timeB = parseInt(itemB.time_added);
+            if (timeA < timeB) {
+                return 1;
+            }
+            if (timeA > timeB) {
+                return -1;
+            }
+            return 0;
+        }).map(entry => {
+            const [, item] = entry;
+            const title = item.resolved_title ? item.resolved_title : item.given_title;
             return {
-                title: item.resolved_title,
-                url: item.resolved_url,
+                title,
+                url: item.given_url,
             };
         });
     }
