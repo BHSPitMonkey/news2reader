@@ -28,11 +28,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         [null, {\
           "packageLocation": "./",\
           "packageDependencies": [\
-            ["@folder/xdg", "npm:4.0.0"],\
+            ["@folder/xdg", "npm:4.0.1"],\
             ["@mozilla/readability", "npm:0.4.4"],\
             ["@types/express", "npm:4.17.17"],\
             ["@types/jsdom", "npm:21.1.1"],\
-            ["@types/node", "npm:20.4.5"],\
+            ["@types/node", "npm:18.17.6"],\
             ["concurrently", "npm:8.2.0"],\
             ["epub-gen", "npm:0.1.0"],\
             ["express", "npm:4.18.2"],\
@@ -57,10 +57,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@folder/xdg", [\
-        ["npm:4.0.0", {\
-          "packageLocation": "./.yarn/cache/@folder-xdg-npm-4.0.0-41e3c2e012-c996b663fa.zip/node_modules/@folder/xdg/",\
+        ["npm:4.0.1", {\
+          "packageLocation": "./.yarn/cache/@folder-xdg-npm-4.0.1-67e338635d-4c30401258.zip/node_modules/@folder/xdg/",\
           "packageDependencies": [\
-            ["@folder/xdg", "npm:4.0.0"],\
+            ["@folder/xdg", "npm:4.0.1"],\
             ["ini", "npm:4.1.1"],\
             ["picomatch", "npm:2.3.1"],\
             ["toml", "npm:3.0.0"],\
@@ -286,6 +286,13 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/node", [\
+        ["npm:18.17.6", {\
+          "packageLocation": "./.yarn/cache/@types-node-npm-18.17.6-aea0ee126a-70bc92adde.zip/node_modules/@types/node/",\
+          "packageDependencies": [\
+            ["@types/node", "npm:18.17.6"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
         ["npm:20.4.5", {\
           "packageLocation": "./.yarn/cache/@types-node-npm-20.4.5-7555fad0d4-36a0304a8d.zip/node_modules/@types/node/",\
           "packageDependencies": [\
@@ -2666,11 +2673,11 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
           "packageLocation": "./",\
           "packageDependencies": [\
             ["news2reader", "workspace:."],\
-            ["@folder/xdg", "npm:4.0.0"],\
+            ["@folder/xdg", "npm:4.0.1"],\
             ["@mozilla/readability", "npm:0.4.4"],\
             ["@types/express", "npm:4.17.17"],\
             ["@types/jsdom", "npm:21.1.1"],\
-            ["@types/node", "npm:20.4.5"],\
+            ["@types/node", "npm:18.17.6"],\
             ["concurrently", "npm:8.2.0"],\
             ["epub-gen", "npm:0.1.0"],\
             ["express", "npm:4.18.2"],\
