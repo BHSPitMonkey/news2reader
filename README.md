@@ -9,7 +9,7 @@ Many e-readers and other e-book reading software support browsing and
 downloading e-books from sources called OPDS Catalogs. (Wikipedia)
 
 **news2reader** acts as an OPDS Catalog, but instead of listing books it
-lists current articles from sources like Hacker News and Pocket. When you
+lists current articles from sources like Hacker News, Tildes.net, and Pocket. When you
 select an article for download, the article is automatically converted into a 
 readable EPUB file and downloaded to your device.
 
