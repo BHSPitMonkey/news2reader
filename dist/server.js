@@ -11,6 +11,7 @@ import { OPDSFeed } from "./opds.js";
 import { articleToEpub } from "./epub.js";
 import PocketProvider from "./provider/pocket.js";
 import HackerNewsProvider from "./provider/hacker-news.js";
+import TildesProvider from "./provider/tildes.js";
 //import dotenv from 'dotenv';
 //dotenv.config();
 const dirs = xdg({
@@ -32,9 +33,10 @@ const catalogAuthor = {
     name: "news2reader",
     uri: "https://github.com/BHSPitMonkey/news2reader",
 };
-// Initialize providers;
+// Initialize providers
 const hackerNewsProvider = new HackerNewsProvider(app, configDir);
 const pocketProvider = new PocketProvider(app, configDir);
+const tildesProvider = new TildesProvider(app, configDir);
 // Catalog Root
 app.get("/opds", (req, res) => {
     const feed = new OPDSFeed({
@@ -52,6 +54,12 @@ app.get("/opds", (req, res) => {
             id: "hn",
             link: "/opds/provider/hackernews",
             content: "Stories from Hacker News",
+        },
+        {
+            title: "Tildes",
+            id: "tildes",
+            link: "/opds/provider/tildes",
+            content: "Articles from Tildes",
         },
         {
             title: "Pocket",
@@ -113,6 +121,8 @@ app.get("/", async (req, res) => {
     </p>
     <h2>Connected accounts</h2>
     <h3>Hacker News</h3>
+    <p>Not yet supported</h3>
+    <h3>Tildes.net</h3>
     <p>Not yet supported</h3>
     <h3>Pocket</h3>
     ${pocketHtml}
