@@ -32,7 +32,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@mozilla/readability", "npm:0.4.4"],\
             ["@types/express", "npm:4.17.17"],\
             ["@types/jsdom", "npm:21.1.1"],\
-            ["@types/node", "npm:18.17.6"],\
+            ["@types/node", "npm:20.5.1"],\
             ["concurrently", "npm:8.2.0"],\
             ["epub-gen", "npm:0.1.0"],\
             ["express", "npm:4.18.2"],\
@@ -286,17 +286,17 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["@types/node", [\
-        ["npm:18.17.6", {\
-          "packageLocation": "./.yarn/cache/@types-node-npm-18.17.6-aea0ee126a-70bc92adde.zip/node_modules/@types/node/",\
-          "packageDependencies": [\
-            ["@types/node", "npm:18.17.6"]\
-          ],\
-          "linkType": "HARD"\
-        }],\
         ["npm:20.4.5", {\
           "packageLocation": "./.yarn/cache/@types-node-npm-20.4.5-7555fad0d4-36a0304a8d.zip/node_modules/@types/node/",\
           "packageDependencies": [\
             ["@types/node", "npm:20.4.5"]\
+          ],\
+          "linkType": "HARD"\
+        }],\
+        ["npm:20.5.1", {\
+          "packageLocation": "./.yarn/cache/@types-node-npm-20.5.1-d4e9ac5c26-3dbe611cd6.zip/node_modules/@types/node/",\
+          "packageDependencies": [\
+            ["@types/node", "npm:20.5.1"]\
           ],\
           "linkType": "HARD"\
         }]\
@@ -2677,7 +2677,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@mozilla/readability", "npm:0.4.4"],\
             ["@types/express", "npm:4.17.17"],\
             ["@types/jsdom", "npm:21.1.1"],\
-            ["@types/node", "npm:18.17.6"],\
+            ["@types/node", "npm:20.5.1"],\
             ["concurrently", "npm:8.2.0"],\
             ["epub-gen", "npm:0.1.0"],\
             ["express", "npm:4.18.2"],\
