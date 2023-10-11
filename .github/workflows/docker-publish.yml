@@ -6,8 +6,6 @@ name: Build/Publish x86 Docker image to GCR
 # documentation.
 
 on:
-  schedule:
-    - cron: '39 20 * * *'
   push:
     branches: [ "main" ]
     # Publish semver tags as releases.
