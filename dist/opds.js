@@ -2,6 +2,7 @@ import querystring from "node:querystring";
 import { create } from "xmlbuilder2";
 import { nameFromUrlPath } from "./util.js";
 const LINK_TYPE_NAVIGATION = 'application/atom+xml;profile=opds-catalog;kind=navigation';
+const LINK_TYPE_SEARCH = 'application/opensearchdescription+xml';
 export class OPDSFeed {
     constructor(properties) {
         const now = (new Date()).toISOString();
@@ -12,8 +13,11 @@ export class OPDSFeed {
             .ele('updated').txt(now).up()
             .ele('link', { rel: 'self', href: properties.links.self, type: LINK_TYPE_NAVIGATION }).up()
             .ele('link', { rel: 'start', href: properties.links.start, type: LINK_TYPE_NAVIGATION }).up();
-        if (typeof properties.links.up === "string") {
+        if (properties.links.up) {
             this.feed.ele('link', { rel: 'up', href: properties.links.up, type: LINK_TYPE_NAVIGATION }).up();
+        }
+        if (properties.links.search) {
+            this.feed.ele('link', { rel: 'search', href: properties.links.search, type: LINK_TYPE_SEARCH }).up();
         }
         if (typeof properties.author !== "undefined") {
             this.feed.ele('author')

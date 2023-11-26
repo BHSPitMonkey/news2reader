@@ -1,6 +1,7 @@
 import querystring from "node:querystring";
 import got from "got";
 import { OPDSFeed } from "../opds.js";
+import { OpenSearchDescription } from "../opensearch.js";
 export default class HackerNewsProvider {
     constructor(app, configDir) {
         this.FEEDS = [
@@ -10,7 +11,6 @@ export default class HackerNewsProvider {
                 description: "Stories from the Hacker News front page",
                 searchParams: {
                     tags: "story,front_page",
-                    numericFilters: null,
                 },
             },
             {
@@ -55,6 +55,7 @@ export default class HackerNewsProvider {
                     self: "/opds/provider/hackernews",
                     start: "/opds",
                     up: "/opds",
+                    search: "/opds/provider/hackernews/search.xml"
                 },
                 title: "Hacker News",
             });
@@ -66,6 +67,38 @@ export default class HackerNewsProvider {
                     content: entry.description,
                 };
             }));
+            res.type('application/xml').send(feed.toXmlString());
+        });
+        // Search description document
+        app.get(`/opds/provider/hackernews/search.xml`, async (req, res) => {
+            const searchDescription = new OpenSearchDescription('/opds/provider/hackernews/search?q={searchTerms}');
+            res.type('application/xml').send(searchDescription.toXmlString());
+        });
+        // Search handler
+        app.get(`/opds/provider/hackernews/search`, async (req, res) => {
+            const feed = new OPDSFeed({
+                id: `hackernews-search`,
+                links: {
+                    self: `/opds/provider/hackernews/search`,
+                    start: "/opds",
+                    up: "/opds/provider/hackernews",
+                },
+                title: "Search",
+            });
+            // Fetch stories
+            const query = req.query.q;
+            if (typeof query !== "string") {
+                console.error("Search endpoint called without a 'q' query param");
+                res.status(400).send("Search query is required");
+                return;
+            }
+            const stories = await this.getStories({
+                tags: "story",
+                query
+            });
+            for (const story of stories) {
+                feed.addArticleAcquisitionEntry(story.url, story.title);
+            }
             res.type('application/xml').send(feed.toXmlString());
         });
         // Acquisition feeds
@@ -89,7 +122,7 @@ export default class HackerNewsProvider {
             });
         }
     }
-    async getStories(searchParams, lookbackDays) {
+    async getStories(searchParams, lookbackDays = undefined) {
         // Fetch stories
         const maxStories = 60;
         let queryString = querystring.stringify(searchParams);
