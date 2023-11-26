@@ -95,7 +95,7 @@ export default class HackerNewsProvider {
               self: "/opds/provider/hackernews",
               start: "/opds",
               up: "/opds",
-              search: "/opds/provider/hackernews/search.xml"
+              search: "/opds/provider/hackernews/search.xml",
             },
             title: "Hacker News",
           });

@@ -1,7 +1,9 @@
+import querystring from "node:querystring";
 import got from "got";
 import jsdom from "jsdom";
 import { Express, Request, Response } from "express";
 import { OPDSFeed } from "../opds.js";
+import { OpenSearchDescription } from "../opensearch.js";
 
 /**
  * Internal description of a Tildes-specific catalog feed
@@ -34,6 +36,7 @@ export default class TildesProvider {
               self: "/opds/provider/tildes",
               start: "/opds",
               up: "/opds",
+              search: "/opds/provider/tildes/search.xml",
             },
             title: "Hacker News",
           });
@@ -49,6 +52,47 @@ export default class TildesProvider {
           );
           res.type('application/xml').send(feed.toXmlString());
         });
+
+        // Search description document
+        app.get(
+          `/opds/provider/tildes/search.xml`,
+          async (req: Request, res: Response) => {
+            const searchDescription = new OpenSearchDescription('/opds/provider/tildes/search?q={searchTerms}');
+            res.type('application/xml').send(searchDescription.toXmlString());
+          }
+        );
+
+        // Search handler
+        app.get(
+          `/opds/provider/tildes/search`,
+          async (req: Request, res: Response) => {
+            const feed = new OPDSFeed({
+              id: `tildes-search`,
+              links: {
+                self: `/opds/provider/tildes/search`,
+                start: "/opds",
+                up: "/opds/provider/tildes",
+              },
+              title: "Search",
+            });
+
+            // Fetch stories
+            const query = req.query.q;
+            if (typeof query !== "string") {
+              console.error("Search endpoint called without a 'q' query param");
+              res.status(400).send("Search query is required");
+              return;
+            }
+
+            const stories = await this.getStories(query);
+            for (const story of stories) {
+              if (story.url != null && story.title != null) {
+                feed.addArticleAcquisitionEntry(story.url, story.title);
+              }
+            }
+            res.type('application/xml').send(feed.toXmlString());
+          }
+        );
     
         // Acquisition feeds
         for (const entry of this.FEEDS) {
@@ -78,14 +122,23 @@ export default class TildesProvider {
         }
       }
 
-    private async getStories() {
+    private async getStories(query?: string) {
         // Fetch stories
 
         if (process.env.VERBOSE) {
           console.log("Searching Tildes for articles");
         }
         
-        const searchUrl = `https://tildes.net/`;
+        let searchUrl = `https://tildes.net/`;
+
+        if (query) {
+          let queryString = querystring.stringify({ q: query, order: "votes" });
+          searchUrl += `search?${queryString}`;
+        }
+        if (process.env.VERBOSE) {
+          console.log("Fetching from:", searchUrl);
+        }
+
         const response = await got(searchUrl).text();
         const virtualConsole = new jsdom.VirtualConsole();
         const dom = new jsdom.JSDOM(response, { url: searchUrl, virtualConsole });
