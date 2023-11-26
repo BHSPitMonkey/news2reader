@@ -4,6 +4,7 @@ import querystring from "node:querystring";
 import got from "got";
 import { Express, Request, Response } from "express";
 import { OPDSFeed } from "../opds.js";
+import { OpenSearchDescription } from "../opensearch.js";
 
 interface OAuthCodeResponse {
     code: string;
@@ -22,6 +23,7 @@ interface PocketApiSearchParams {
     count?: number,
     detailType?: "simple",
     favorite?: "0" | "1",
+    search?: string,
     sort?: "newest",
     state?: "all" | "unread",
 }
@@ -183,6 +185,7 @@ export default class PocketProvider {
           self: "/opds/provider/pocket",
           start: "/opds",
           up: "/opds",
+          search: "/opds/provider/pocket/search.xml",
         },
         title: "Pocket",
       });
@@ -198,6 +201,49 @@ export default class PocketProvider {
       );
       res.type('application/xml').send(feed.toXmlString());
     });
+
+    // Search description document
+    app.get(
+      `/opds/provider/pocket/search.xml`,
+      async (req: Request, res: Response) => {
+        const searchDescription = new OpenSearchDescription('/opds/provider/pocket/search?q={searchTerms}');
+        res.type('application/xml').send(searchDescription.toXmlString());
+      }
+    );
+
+    // Search handler
+    app.get(
+      `/opds/provider/pocket/search`,
+      async (req: Request, res: Response) => {
+        const feed = new OPDSFeed({
+          id: `pocket-search`,
+          links: {
+            self: `/opds/provider/pocket/search`,
+            start: "/opds",
+            up: "/opds/provider/pocket",
+          },
+          title: "Search",
+        });
+
+        const query = req.query.q;
+        if (typeof query !== "string") {
+          console.error("Search endpoint called without a 'q' query param");
+          res.status(400).send("Search query is required");
+          return;
+        }
+
+        // Fetch stories
+        const combinedSearchParams = {
+          ...this.BASE_SEARCH_PARAMS,
+          search: query,
+        };
+        const stories = await this.getStories(combinedSearchParams);
+        for (const story of stories) {
+          feed.addArticleAcquisitionEntry(story.url, story.title);
+        }
+        res.type('application/xml').send(feed.toXmlString());
+      }
+    );
 
     // Acquisition feeds
     for (const entry of this.FEEDS) {
