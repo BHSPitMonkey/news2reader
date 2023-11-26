@@ -23,8 +23,8 @@ const app = express();
 const port = (_a = process.env.PORT) !== null && _a !== void 0 ? _a : 8080;
 // Basic request/response logging
 app.use((req, res, next) => {
-    res.on('finish', () => {
-        const now = (new Date()).toISOString();
+    res.on("finish", () => {
+        const now = new Date().toISOString();
         console.log(`${now} ${req.method} ${req.url} (HTTP ${res.statusCode})`);
     });
     next();
@@ -49,6 +49,7 @@ app.get("/opds", (req, res) => {
         author: catalogAuthor,
     });
     feed.addEntries([
+        // TODO: Make this more dynamic
         {
             title: "Hacker News",
             id: "hn",
@@ -68,15 +69,19 @@ app.get("/opds", (req, res) => {
             content: "Saved articles from your Pocket account",
         },
     ]);
-    res.type('application/xml').send(feed.toXmlString());
+    res.type("application/xml").send(feed.toXmlString());
 });
 // Generate and serve an epub based on the 'url' query param
 app.get("/content.epub", async (req, res) => {
-    const url = req.query.url;
+    let url = req.query.url;
     if (typeof url !== "string") {
         console.error("Query string did not contain a string as the URL");
         res.status(400).send("Could not retrieve this article");
         return;
+    }
+    // URL may need to be base64 decoded
+    if (!url.startsWith("http:") || !url.startsWith("https:")) {
+        url = Buffer.from(url, "base64").toString();
     }
     const title = typeof req.query.title === "string" ? req.query.title : null;
     try {

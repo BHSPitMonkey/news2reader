@@ -18,15 +18,15 @@ const dirs = xdg({
   subdir: "news2reader",
 });
 const configDir = dirs.config;
-fs.mkdirSync(configDir, {recursive: true});
+fs.mkdirSync(configDir, { recursive: true });
 
 const app: Express = express();
 const port = process.env.PORT ?? 8080;
 
 // Basic request/response logging
 app.use((req, res, next) => {
-  res.on('finish', () => {
-    const now = (new Date()).toISOString();
+  res.on("finish", () => {
+    const now = new Date().toISOString();
     console.log(`${now} ${req.method} ${req.url} (HTTP ${res.statusCode})`);
   });
   next();
@@ -53,7 +53,8 @@ app.get("/opds", (req: Request, res: Response) => {
     title: "News2Reader Catalog Root",
     author: catalogAuthor,
   });
-  feed.addEntries([ // TODO: Make this more dynamic
+  feed.addEntries([
+    // TODO: Make this more dynamic
     {
       title: "Hacker News",
       id: "hn",
@@ -73,16 +74,21 @@ app.get("/opds", (req: Request, res: Response) => {
       content: "Saved articles from your Pocket account",
     },
   ]);
-  res.type('application/xml').send(feed.toXmlString());
+  res.type("application/xml").send(feed.toXmlString());
 });
 
 // Generate and serve an epub based on the 'url' query param
 app.get("/content.epub", async (req: Request, res: Response) => {
-  const url = req.query.url;
+  let url = req.query.url;
   if (typeof url !== "string") {
     console.error("Query string did not contain a string as the URL");
     res.status(400).send("Could not retrieve this article");
     return;
+  }
+
+  // URL may need to be base64 decoded
+  if (!url.startsWith("http:") || !url.startsWith("https:")) {
+    url = Buffer.from(url, "base64").toString();
   }
 
   const title = typeof req.query.title === "string" ? req.query.title : null;

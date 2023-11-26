@@ -36,8 +36,10 @@ export class OPDSFeed {
         }
     }
     addArticleAcquisitionEntry(url, title) {
-        const queryString = querystring.stringify({ url });
+        // URL param is base64-encoded to avoid misleading clients trying to detect type based on suffixes
+        const queryString = querystring.stringify({ url: Buffer.from(url).toString('base64') });
         // Simplistic PDF/EPUB detection (skip conversion when URL ends in these extensions)
+        // FIXME: Better way? Make HEAD request to URL first?
         let href = url;
         let type;
         if (url.endsWith(".pdf")) {
