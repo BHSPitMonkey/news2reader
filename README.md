@@ -6,7 +6,7 @@ for consumption via e-reader software (such as [KOReader](https://koreader.rocks
 ## What it does
 
 Many e-readers and other e-book reading software support browsing and
-downloading e-books from sources called OPDS Catalogs. (Wikipedia)
+downloading e-books from sources called OPDS Catalogs. ([Wikipedia](https://en.wikipedia.org/wiki/Open_Publication_Distribution_System)) ([Supported software](https://wiki.mobileread.com/wiki/OPDS#eBook_Reading_Software_Supporting_OPDS))
 
 **news2reader** acts as an OPDS Catalog, but instead of listing books it
 lists current articles from sources like Hacker News, Tildes.net, and Pocket. When you
@@ -18,7 +18,7 @@ readable EPUB file and downloaded to your device.
 |   |   |   |
 | - | - | - |
 | ![1](https://github.com/BHSPitMonkey/news2reader/assets/33672/a0b1186f-61b0-4624-af9e-3e8a84a92d47) | ![2](https://github.com/BHSPitMonkey/news2reader/assets/33672/89dadc7e-4489-4824-91df-f999cdf76df4) | ![3](https://github.com/BHSPitMonkey/news2reader/assets/33672/b21125e9-245a-4c24-903c-bd5caf1c7eb6) |
-| ![4](https://github.com/BHSPitMonkey/news2reader/assets/33672/06c38188-7a48-473e-a446-8fb20b8beb4b) | ![5](https://github.com/BHSPitMonkey/news2reader/assets/33672/a6b36554-e337-407b-b3ea-668967c5f447) | ![6](https://github.com/BHSPitMonkey/news2reader/assets/33672/bc01022c-a5bd-41cb-99e0-f5816003cf59) |
+| ![4](https://github.com/BHSPitMonkey/news2reader/assets/33672/06c38188-7a48-473e-a446-8fb20b8beb4b) | ![5](https://github.com/BHSPitMonkey/news2reader/assets/33672/5177d71c-27db-4629-bc9d-1953a909fbb6) | ![6](https://github.com/BHSPitMonkey/news2reader/assets/33672/bc01022c-a5bd-41cb-99e0-f5816003cf59) |
 | ![7](https://github.com/BHSPitMonkey/news2reader/assets/33672/7030392a-c130-4fa4-9c58-77512d698bbc) | ![8](https://github.com/BHSPitMonkey/news2reader/assets/33672/eff9ac5a-3ce5-4bc4-a2c1-b0bd767d1e09) | ![9](https://github.com/BHSPitMonkey/news2reader/assets/33672/b48088f5-28ef-43eb-9fdb-1589d372c385) |
 
 ## How it works
