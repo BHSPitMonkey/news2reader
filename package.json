@@ -13,6 +13,9 @@
     "./src/provider/hacker-news": "./dist/src/provider/hacker-news.js",
     "./src/provider/pocket": "./dist/src/provider/pocket.js"
   },
+  "engines": {
+    "node": ">= 20.0.0"
+  },
   "dependencies": {
     "@folder/xdg": "^4.0.1",
     "@mozilla/readability": "^0.5.0",
