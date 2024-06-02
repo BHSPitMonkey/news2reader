@@ -4,6 +4,11 @@ import Epub from "epub-gen";
 import jsdom from "jsdom";
 import { Readability } from "@mozilla/readability";
 import got from "got";
+const HEADERS = {
+    'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+    'cache-control': 'no-cache',
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3',
+};
 export async function articleToEpub(url, preferredTitle) {
     var _a;
     const urlObj = new URL(url);
@@ -12,7 +17,9 @@ export async function articleToEpub(url, preferredTitle) {
     const outputPath = "/tmp/news2opds-out.epub";
     const virtualConsole = new jsdom.VirtualConsole();
     console.log(`Processing article at URL ${url} to path ${outputPath}`);
-    const { body } = await got(url);
+    const { body } = await got(url, {
+        headers: HEADERS
+    });
     console.log(`Fetched ${body.length} chars from ${url}`);
     // Create a JSDOM
     const dom = new jsdom.JSDOM(body, { url, virtualConsole });
