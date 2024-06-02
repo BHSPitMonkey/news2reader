@@ -32,6 +32,6 @@
     "@types/node": "^20.13.0",
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.5"
   }
 }
