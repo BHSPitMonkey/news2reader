@@ -40,7 +40,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["got", "npm:12.6.1"],\
             ["jsdom", "virtual:1c70d8e181737d5ab39c4d8abcf877d4935835cff8dbf876c1e1cec646046c8ec891c0654f862bb1538b798be313c6cdee86426894f1f831e3428f7823990ff4#npm:25.0.1"],\
             ["nodemon", "npm:3.1.7"],\
-            ["typescript", "patch:typescript@npm%3A5.4.5#~builtin<compat/typescript>::version=5.4.5&hash=14eedb"],\
+            ["typescript", "patch:typescript@npm%3A5.7.2#~builtin<compat/typescript>::version=5.7.2&hash=14eedb"],\
             ["xmlbuilder2", "npm:3.1.1"]\
           ],\
           "linkType": "SOFT"\
@@ -2827,7 +2827,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["got", "npm:12.6.1"],\
             ["jsdom", "virtual:1c70d8e181737d5ab39c4d8abcf877d4935835cff8dbf876c1e1cec646046c8ec891c0654f862bb1538b798be313c6cdee86426894f1f831e3428f7823990ff4#npm:25.0.1"],\
             ["nodemon", "npm:3.1.7"],\
-            ["typescript", "patch:typescript@npm%3A5.4.5#~builtin<compat/typescript>::version=5.4.5&hash=14eedb"],\
+            ["typescript", "patch:typescript@npm%3A5.7.2#~builtin<compat/typescript>::version=5.7.2&hash=14eedb"],\
             ["xmlbuilder2", "npm:3.1.1"]\
           ],\
           "linkType": "SOFT"\
@@ -3812,10 +3812,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         }]\
       ]],\
       ["typescript", [\
-        ["patch:typescript@npm%3A5.4.5#~builtin<compat/typescript>::version=5.4.5&hash=14eedb", {\
-          "packageLocation": "./.yarn/cache/typescript-patch-75f7179b67-2373c693f3.zip/node_modules/typescript/",\
+        ["patch:typescript@npm%3A5.7.2#~builtin<compat/typescript>::version=5.7.2&hash=14eedb", {\
+          "packageLocation": "./.yarn/cache/typescript-patch-03f44d9cea-803430c6da.zip/node_modules/typescript/",\
           "packageDependencies": [\
-            ["typescript", "patch:typescript@npm%3A5.4.5#~builtin<compat/typescript>::version=5.4.5&hash=14eedb"]\
+            ["typescript", "patch:typescript@npm%3A5.7.2#~builtin<compat/typescript>::version=5.7.2&hash=14eedb"]\
           ],\
           "linkType": "HARD"\
         }]\
