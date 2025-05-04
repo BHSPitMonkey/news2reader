@@ -52,14 +52,21 @@ export class OPDSFeed {
         .ele('title').txt(properties.title).up()
         .ele('link', { rel: 'subsection', href: properties.link, type: LINK_TYPE_NAVIGATION }).up()
         //.ele('updated').txt('2023-07-27T07:26:26.954Z').up()
-        .ele('content', {type: 'text'}).txt(properties.content).up();      
+        .ele('content', {type: 'text'}).txt(properties.content).up();
+    }
+    addGenericLinkEntry(properties: { id: string, title: string, linkHref: string, linkRel: string, linkType: string, content: string }) {
+        this.feed.ele('entry')
+        .ele('id').txt(properties.id).up()
+        .ele('title').txt(properties.title).up()
+        .ele('link', { rel: properties.linkRel, href: properties.linkHref, type: properties.linkType }).up()
+        .ele('content', {type: 'text'}).txt(properties.content).up();
     }
     addEntries(entries: SubsectionEntryProperties[]) {
         for (const entry of entries) {
             this.addEntry(entry);
         }
     }
-    addArticleAcquisitionEntry(url: string, title: string) {
+    addArticleAcquisitionEntry(url: string, title: string, summary?: string) {
       // URL param is base64-encoded to avoid misleading clients trying to detect type based on suffixes
       const queryString = querystring.stringify({ url: Buffer.from(url).toString('base64') });
 
@@ -91,6 +98,10 @@ export class OPDSFeed {
           href,
           type,
         }).up();
+
+      if (summary && summary.trim() !== "") {
+        this.feed.ele('summary', {type: 'text'}).txt(summary.trim()).up();
+      }
     }
     toXmlString() {
         return this.feed.doc().end({ prettyPrint: true });
