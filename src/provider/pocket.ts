@@ -239,6 +239,10 @@ export default class PocketProvider {
         };
         const stories = await this.getStories(combinedSearchParams);
         for (const story of stories) {
+          if (story.url === undefined || story.title === undefined) {
+              console.warn("WARN: Skipping story due to undefined url or title:", story);
+              continue; // Skip this iteration
+          }
           feed.addArticleAcquisitionEntry(story.url, story.title);
         }
         res.type('application/xml').send(feed.toXmlString());
@@ -267,6 +271,10 @@ export default class PocketProvider {
           };
           const stories = await this.getStories(combinedSearchParams);
           for (const story of stories) {
+            if (story.url === undefined || story.title === undefined) {
+                console.warn("WARN: Skipping story due to undefined url or title:", story);
+                continue; // Skip this iteration
+            }
             feed.addArticleAcquisitionEntry(story.url, story.title);
           }
           res.type('application/xml').send(feed.toXmlString());
