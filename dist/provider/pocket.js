@@ -7,7 +7,10 @@ import { OpenSearchDescription } from "../opensearch.js";
 ;
 export default class PocketProvider {
     constructor(app, configDir) {
-        this.CONSUMER_KEY = "108332-4cb01719bb01deabce69438";
+        var _a, _b;
+        // Allow env var overrides to point to custom Pocket-compatible servers
+        this.BASE_URL = (_a = process.env.POCKET_BASE_URL) !== null && _a !== void 0 ? _a : "https://getpocket.com";
+        this.CONSUMER_KEY = (_b = process.env.POCKET_API_CONSUMER_KEY) !== null && _b !== void 0 ? _b : "108332-4cb01719bb01deabce69438";
         this.BASE_SEARCH_PARAMS = {
             detailType: "simple",
             count: 60,
@@ -62,7 +65,7 @@ export default class PocketProvider {
             const redirectUrl = `http://${req.headers.host}/pocket/oauth`;
             try {
                 const data = (await got
-                    .post("https://getpocket.com/v3/oauth/request", {
+                    .post(`${this.BASE_URL}/v3/oauth/request`, {
                     headers: {
                         Accept: "*/*",
                         "X-Accept": "application/json",
@@ -79,7 +82,7 @@ export default class PocketProvider {
                     request_token: this.code,
                     redirect_uri: redirectUrl,
                 });
-                const authorizeUrl = `https://getpocket.com/auth/authorize?${authorizeQuery}`;
+                const authorizeUrl = `${this.BASE_URL}/auth/authorize?${authorizeQuery}`;
                 res.redirect(authorizeUrl);
                 return;
             }
@@ -93,7 +96,7 @@ export default class PocketProvider {
             // We should now be able to exchange our 'code' for an access token
             try {
                 const data = (await got
-                    .post("https://getpocket.com/v3/oauth/authorize", {
+                    .post(`${this.BASE_URL}/v3/oauth/authorize`, {
                     headers: {
                         Accept: "*/*",
                         "X-Accept": "application/json",
@@ -164,6 +167,10 @@ export default class PocketProvider {
             const combinedSearchParams = Object.assign(Object.assign({}, this.BASE_SEARCH_PARAMS), { search: query });
             const stories = await this.getStories(combinedSearchParams);
             for (const story of stories) {
+                if (story.url === undefined || story.title === undefined) {
+                    console.warn("WARN: Skipping story due to undefined url or title:", story);
+                    continue; // Skip this iteration
+                }
                 feed.addArticleAcquisitionEntry(story.url, story.title);
             }
             res.type('application/xml').send(feed.toXmlString());
@@ -184,6 +191,10 @@ export default class PocketProvider {
                 const combinedSearchParams = Object.assign(Object.assign({}, this.BASE_SEARCH_PARAMS), entry.searchParams);
                 const stories = await this.getStories(combinedSearchParams);
                 for (const story of stories) {
+                    if (story.url === undefined || story.title === undefined) {
+                        console.warn("WARN: Skipping story due to undefined url or title:", story);
+                        continue; // Skip this iteration
+                    }
                     feed.addArticleAcquisitionEntry(story.url, story.title);
                 }
                 res.type('application/xml').send(feed.toXmlString());
@@ -192,7 +203,7 @@ export default class PocketProvider {
     }
     async getStories(searchParams) {
         const data = await got
-            .post("https://getpocket.com/v3/get", {
+            .post(`${this.BASE_URL}/v3/get`, {
             headers: {
                 Accept: "*/*",
                 "X-Accept": "application/json",
