@@ -137,7 +137,7 @@ app.get("/", async (req: Request, res: Response) => {
     <p>Not yet supported</h3>
     <h3>Tildes.net</h3>
     <p>Not yet supported</h3>
-    <h3>Pocket</h3>
+    <h3>Pocket-compatible server at ${pocketProvider.BASE_URL}</h3>
     ${pocketHtml}
   </body>
   `;
