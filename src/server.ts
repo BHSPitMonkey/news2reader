@@ -4,13 +4,14 @@
  * those links upon request.
  */
 import fs from "node:fs";
-import express, { Express, Request, Response } from "express";
+import express, { Express, Request, Response, urlencoded } from "express"; // Added urlencoded
 import xdg from "@folder/xdg";
 import { OPDSFeed } from "./opds.js";
 import { articleToEpub } from "./epub.js";
 import PocketProvider from "./provider/pocket.js";
 import HackerNewsProvider from "./provider/hacker-news.js";
 import TildesProvider from "./provider/tildes.js";
+import RaindropProvider from "./provider/raindrop.js";
 
 //import dotenv from 'dotenv';
 //dotenv.config();
@@ -41,6 +42,7 @@ const catalogAuthor = {
 const hackerNewsProvider = new HackerNewsProvider(app, configDir);
 const pocketProvider = new PocketProvider(app, configDir);
 const tildesProvider = new TildesProvider(app, configDir);
+const raindropProvider = new RaindropProvider(app, configDir);
 
 // Catalog Root
 app.get("/opds", (req: Request, res: Response) => {
@@ -73,6 +75,12 @@ app.get("/opds", (req: Request, res: Response) => {
       link: "/opds/provider/pocket",
       content: "Saved articles from your Pocket account",
     },
+    {
+      title: "Raindrop.io",
+      id: "raindrop",
+      link: "/opds/provider/raindrop",
+      content: "Collections and bookmarks from Raindrop.io",
+    },
   ]);
   res.type("application/xml").send(feed.toXmlString());
 });
@@ -104,6 +112,21 @@ app.get("/content.epub", async (req: Request, res: Response) => {
   }
 });
 
+// Middleware to parse URL-encoded bodies (form submissions)
+const urlencodedParser = urlencoded({ extended: true });
+
+// Route to handle Raindrop token submission from the index page
+app.post("/configure/raindrop", urlencodedParser, (req: Request, res: Response) => {
+  const token = req.body.raindropToken;
+  if (typeof token === 'string' && token.trim() !== '') {
+    raindropProvider.setAccessToken(token.trim());
+    res.redirect("/"); // Redirect back to the index page
+  } else {
+    // Optional: redirect back with an error message, or just show a simple error
+    res.status(400).send("Raindrop.io API token cannot be empty. <a href=\"/\">Go back</a>");
+  }
+});
+
 // Generate and serve an epub based on the 'url' query param
 app.get("/", async (req: Request, res: Response) => {
   let pocketHtml;
@@ -112,6 +135,24 @@ app.get("/", async (req: Request, res: Response) => {
   } else {
     pocketHtml = `<p>Not connected. <a href="/pocket/setup">Connect to Pocket</a></p>`;
   }
+
+  let raindropHtml;
+  if (raindropProvider.isConnected()) {
+    raindropHtml = `<p>Connected!</p>`; // Optionally, add a link to reconfigure or disconnect
+  } else {
+    raindropHtml = `
+      <p>Not connected. Configure Raindrop.io:</p>
+      <form action="/configure/raindrop" method="POST" style="margin-bottom: 20px;">
+        <div>
+          <label for="raindropToken" style="display: block; margin-bottom: 5px;">Raindrop.io API Token:</label>
+          <input type="text" id="raindropToken" name="raindropToken" required style="width: 80%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+        </div>
+        <button type="submit" style="background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer;">Save Token</button>
+      </form>
+      <p><small>You can generate a test token from your Raindrop.io account: Settings -> Integrations -> Create new app.</small></p>
+    `;
+  }
+
   const body = `
   <html>
   <head>
@@ -139,6 +180,8 @@ app.get("/", async (req: Request, res: Response) => {
     <p>Not yet supported</h3>
     <h3>Pocket-compatible server at ${pocketProvider.BASE_URL}</h3>
     ${pocketHtml}
+    <h3>Raindrop.io</h3>
+    ${raindropHtml}
   </body>
   `;
   res.send(body);
