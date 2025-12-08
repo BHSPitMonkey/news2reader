@@ -11,6 +11,7 @@ import { articleToEpub } from "./epub.js";
 import PocketProvider from "./provider/pocket.js";
 import HackerNewsProvider from "./provider/hacker-news.js";
 import TildesProvider from "./provider/tildes.js";
+import KarakeepProvider from "./provider/karakeep.js";
 
 //import dotenv from 'dotenv';
 //dotenv.config();
@@ -41,6 +42,7 @@ const catalogAuthor = {
 const hackerNewsProvider = new HackerNewsProvider(app, configDir);
 const pocketProvider = new PocketProvider(app, configDir);
 const tildesProvider = new TildesProvider(app, configDir);
+const karakeepProvider = new KarakeepProvider(app, configDir);
 
 // Catalog Root
 app.get("/opds", (req: Request, res: Response) => {
@@ -66,6 +68,12 @@ app.get("/opds", (req: Request, res: Response) => {
       id: "tildes",
       link: "/opds/provider/tildes",
       content: "Articles from Tildes",
+    },
+    {
+      title: "Karakeep",
+      id: "karakeep",
+      link: "/opds/provider/karakeep",
+      content: "Saved articles from your Karakeep account",
     },
     {
       title: "Pocket",
@@ -112,6 +120,12 @@ app.get("/", async (req: Request, res: Response) => {
   } else {
     pocketHtml = `<p>Not connected. <a href="/pocket/setup">Connect to Pocket</a></p>`;
   }
+  let karakeepHtml;
+  if (karakeepProvider.isConnected()) {
+    karakeepHtml = `<p>Connected! Using Karakeep server at ${karakeepProvider.BASE_URL}</p>`;
+  } else {
+    karakeepHtml = `<p>Not connected. Set <code>KARAKEEP_API_URL</code> and <code>KARAKEEP_API_KEY</code> to configure.</p>`;
+  }
   const body = `
   <html>
   <head>
@@ -137,6 +151,8 @@ app.get("/", async (req: Request, res: Response) => {
     <p>Not yet supported</h3>
     <h3>Tildes.net</h3>
     <p>Not yet supported</h3>
+    <h3>Karakeep</h3>
+    ${karakeepHtml}
     <h3>Pocket-compatible server at ${pocketProvider.BASE_URL}</h3>
     ${pocketHtml}
   </body>
