@@ -62,7 +62,9 @@ export default class PocketProvider {
   private accessToken: string | null;
   private authConfigPath: string;
 
-  private readonly CONSUMER_KEY = "108332-4cb01719bb01deabce69438";
+  // Allow env var overrides to point to custom Pocket-compatible servers
+  public readonly BASE_URL = process.env.POCKET_BASE_URL ?? "https://getpocket.com";
+  private readonly CONSUMER_KEY = process.env.POCKET_API_CONSUMER_KEY ?? "108332-4cb01719bb01deabce69438";
   private readonly BASE_SEARCH_PARAMS: PocketApiSearchParams = {
     detailType: "simple",
     count: 60,
@@ -122,7 +124,7 @@ export default class PocketProvider {
       const redirectUrl = `http://${req.headers.host}/pocket/oauth`;
       try {
         const data = (await got
-          .post("https://getpocket.com/v3/oauth/request", {
+          .post(`${this.BASE_URL}/v3/oauth/request`, {
             headers: {
               Accept: "*/*",
               "X-Accept": "application/json",
@@ -139,7 +141,7 @@ export default class PocketProvider {
           request_token: this.code,
           redirect_uri: redirectUrl,
         });
-        const authorizeUrl = `https://getpocket.com/auth/authorize?${authorizeQuery}`;
+        const authorizeUrl = `${this.BASE_URL}/auth/authorize?${authorizeQuery}`;
         res.redirect(authorizeUrl);
         return;
       } catch (e) {
@@ -152,7 +154,7 @@ export default class PocketProvider {
       // We should now be able to exchange our 'code' for an access token
       try {
         const data = (await got
-          .post("https://getpocket.com/v3/oauth/authorize", {
+          .post(`${this.BASE_URL}/v3/oauth/authorize`, {
             headers: {
               Accept: "*/*",
               "X-Accept": "application/json",
@@ -285,7 +287,7 @@ export default class PocketProvider {
 
   private async getStories(searchParams: PocketApiSearchParams) {
     const data = await got
-      .post("https://getpocket.com/v3/get", {
+      .post(`${this.BASE_URL}/v3/get`, {
         headers: {
           Accept: "*/*",
           "X-Accept": "application/json",

@@ -68,6 +68,16 @@ yarn install
 yarn start
 ```
 
+## Configuration
+
+Pocket's official service ends on July 8, 2025. To use news2reader with an API-compatible Pocket alternative,
+you can override the following two environment variables (e.g. in your `docker-compose.yml`):
+
+| Environment variable name | Default value                    |
+| ------------------------- | -------------------------------- |
+| `POCKET_BASE_URL`         | `https://getpocket.com`          |
+| `POCKET_API_CONSUMER_KEY` | `108332-4cb01719bb01deabce69438` |
+
 ## How to use it
 
 Start by opening the homepage in a web browser to make sure the application is running as expected.
