@@ -4,6 +4,12 @@ import Epub from "epub-gen";
 import jsdom from "jsdom";
 import { Readability } from "@mozilla/readability";
 import got from "got";
+import { mathjax } from 'mathjax-full/js/mathjax';
+import { TeX } from 'mathjax-full/js/input/tex';
+import { SVG } from 'mathjax-full/js/output/svg';
+import { jsdomAdaptor } from 'mathjax-full/js/adaptors/jsdomAdaptor';
+import { RegisterHTMLHandler } from 'mathjax-full/js/handlers/html';
+import { AllPackages } from 'mathjax-full/js/input/tex/AllPackages';
 
 const HEADERS = {
   'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -44,6 +50,28 @@ export async function articleToEpub(
     length: article.length,
   });
 
+  // --- Add MathJax support to EPUB
+  // We need a DOM for MathJax to process. We'll create one from the article content.
+  const articleDom = new jsdom.JSDOM(article.content);
+  const articleDocument = articleDom.window.document;
+
+  // Pre-render MathJax equations to SVG and embed them in the EPUB content.
+  const adaptor = jsdomAdaptor(articleDom.window);
+  RegisterHTMLHandler(adaptor);
+
+  const tex = new TeX({ packages: AllPackages });
+  const svg = new SVG({ fontCache: 'none' });
+  const mjDocument = mathjax.document(articleDocument, {
+    InputJax: tex,
+    OutputJax: svg,
+  });
+
+  mjDocument.render();
+
+  const mathjaxCss = adaptor.textContent(svg.styleSheet(mjDocument) as HTMLElement);
+  const processedContent = articleDocument.body.innerHTML;
+  // ---
+
   const title = preferredTitle ?? article?.title ?? "Title Missing";
 
   // Build the EPUB at output_path
@@ -56,10 +84,11 @@ export async function articleToEpub(
       {
         title: title,
         author: article?.byline,
-        data: article.content,
+        data: processedContent,
         beforeToc: true,
       },
     ],
+    css: mathjaxCss,
     tempDir: tmpdir(),
   }).promise;
 
