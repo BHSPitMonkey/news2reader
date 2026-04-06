@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.description=" Serve online articles directly to y
 LABEL org.opencontainers.image.licenses=MIT
 
 WORKDIR /usr/src/app
-COPY package.json yarn.lock ./
+COPY package.json yarn.lock .yarnrc.yml ./
 
 RUN corepack enable
 RUN yarn install --network-timeout 600000
