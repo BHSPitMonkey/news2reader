@@ -11,7 +11,8 @@
   },
   "exports": {
     "./src/provider/hacker-news": "./dist/src/provider/hacker-news.js",
-    "./src/provider/pocket": "./dist/src/provider/pocket.js"
+    "./src/provider/pocket": "./dist/src/provider/pocket.js",
+    "./src/provider/raindrop": "./dist/src/provider/raindrop.js"
   },
   "engines": {
     "node": ">= 22.0.0"
@@ -20,6 +21,7 @@
     "@folder/xdg": "^4.0.1",
     "@mozilla/readability": "^0.5.0",
     "@types/jsdom": "^21.1.7",
+    "axios": "^1.7.2",
     "epub-gen": "^0.1.0",
     "express": "^4.21.2",
     "feed": "^4.2.2",
@@ -28,8 +30,9 @@
     "xmlbuilder2": "^3.1.1"
   },
   "devDependencies": {
+    "@types/axios": "^0.14.0",
     "@types/express": "^4.17.21",
-    "@types/node": "^22.0.3",
+    "@types/node": "^22.15.27",
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.7",
     "typescript": "^5.7.2"
