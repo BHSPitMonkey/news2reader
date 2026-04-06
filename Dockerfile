@@ -6,6 +6,7 @@ LABEL org.opencontainers.image.licenses=MIT
 
 WORKDIR /usr/src/app
 COPY package.json yarn.lock .yarnrc.yml ./
+COPY .yarn/plugins/ ./.yarn/plugins/
 
 RUN corepack enable
 RUN yarn install --network-timeout 600000
