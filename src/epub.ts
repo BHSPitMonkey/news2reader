@@ -17,6 +17,8 @@ const HEADERS = {
   'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.3',
 };
 
+const READABILITY_DEBUG = process.env.READABILITY_DEBUG === "1" || process.env.READABILITY_DEBUG === "true";
+
 export async function articleToEpub(
   url: string,
   preferredTitle: string | null
@@ -27,27 +29,68 @@ export async function articleToEpub(
   // TODO: Read/write EPUB into a cache dir by URL hash
   const outputPath = "/tmp/news2opds-out.epub";
   const virtualConsole = new jsdom.VirtualConsole();
+  virtualConsole.on("jsdomError", (err) => console.error("JSDOM error:", err));
+  virtualConsole.on("error", (err) => console.error("JSDOM console.error:", err));
+  virtualConsole.on("warn", (msg) => console.warn("JSDOM console.warn:", msg));
+  virtualConsole.on("info", (msg) => console.info("JSDOM console.info:", msg));
+  virtualConsole.on("log", (msg) => console.log("JSDOM console.log:", msg));
 
   console.log(`Processing article at URL ${url} to path ${outputPath}`);
 
-  const { body } = await got(url, {
+  const fetchStart = Date.now();
+  const response = await got(url, {
     headers: HEADERS
   });
-  console.log(`Fetched ${body.length} chars from ${url}`);
+  const body = response.body;
+  const rawContentType = response.headers["content-type"];
+  const contentType = Array.isArray(rawContentType) ? rawContentType.join(", ") : rawContentType;
+  console.log(`Fetched ${body.length} chars from ${url} in ${Date.now() - fetchStart}ms (status ${response.statusCode}, content-type: ${contentType ?? "unknown"})`);
 
   // Create a JSDOM
+  const domStart = Date.now();
   const dom = new jsdom.JSDOM(body, { url, virtualConsole });
+  console.log(`Constructed JSDOM in ${Date.now() - domStart}ms`);
+  if (READABILITY_DEBUG) {
+    console.log("Readability debug enabled (READABILITY_DEBUG).");
+  }
 
   // Create Readable HTML
-  let reader = new Readability(dom.window.document);
-  let article = reader.parse();
+  const readabilityStart = Date.now();
+  let reader = new Readability(dom.window.document, { debug: READABILITY_DEBUG, keepClasses: READABILITY_DEBUG });
+  let article: any = null;
+  try {
+    article = reader.parse();
+  } catch (err) {
+    console.error("Readability.parse() threw an exception", err);
+  }
+  console.log(`Readability.parse() executed in ${Date.now() - readabilityStart}ms`);
   if (article === null) {
+    const doc = dom.window.document;
+    const bodyTextLength = doc.body?.textContent?.length ?? 0;
+    const bodyHTMLLength = doc.body?.innerHTML?.length ?? 0;
+    console.error("Readability failed to parse.", {
+      url,
+      baseURI: doc.baseURI,
+      docTitle: doc.title,
+      bodyTextLength,
+      bodyHTMLLength,
+      articleTags: doc.getElementsByTagName("article").length,
+      mainTags: doc.getElementsByTagName("main").length,
+      h1Tags: doc.getElementsByTagName("h1").length,
+    });
+    if (process.env.VERBOSE) {
+      console.error("Document head HTML (first 5000 chars):", doc.head?.innerHTML?.slice(0, 5000));
+      console.error("Document body HTML (first 5000 chars):", doc.body?.innerHTML?.slice(0, 5000));
+    } else {
+      console.error("Set VERBOSE=1 to include HTML snippets in logs.");
+    }
     throw new Error('Failed to parse article using Readability');
   }
   console.log(`Parsed article:`, {
     title: article.title,
     byline: article.byline,
     length: article.length,
+    excerpt: article.excerpt?.slice(0, 120),
   });
 
   // --- Add MathJax support to EPUB
