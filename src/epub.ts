@@ -66,3 +66,42 @@ export async function articleToEpub(
   console.log(`EPUB saved to ${outputPath}`);
   return outputPath;
 }
+
+/**
+ * Build an EPUB directly from HTML content we already have (e.g. Readwise
+ * Reader's `html_content`), skipping the fetch + Readability step used by
+ * `articleToEpub`. This preserves content that a re-fetch would lose
+ * (paywalled articles, newsletters/emails, reader-mode cleanups, etc).
+ */
+export async function htmlToEpub(options: {
+  html: string;
+  title: string;
+  outputPath: string;
+  author?: string | null;
+  publisher?: string | null;
+}): Promise<string> {
+  const { html, title, outputPath, author, publisher } = options;
+
+  await new Epub({
+    output: outputPath,
+    title,
+    author: author ?? undefined,
+    publisher: publisher ?? undefined,
+    // epub-gen (0.1.0) does not expose a way to set the OPF dc:identifier;
+    // it generates its own UUID. The Readwise document id is instead carried
+    // in the OPDS entry <id> and the EPUB filename. If the v2 KOSync mapping
+    // needs an in-file identifier, revisit this (custom builder or post-process).
+    content: [
+      {
+        title,
+        author: author ?? undefined,
+        data: html,
+        beforeToc: true,
+      },
+    ],
+    tempDir: tmpdir(),
+  }).promise;
+
+  console.log(`EPUB saved to ${outputPath}`);
+  return outputPath;
+}

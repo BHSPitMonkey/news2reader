@@ -78,6 +78,21 @@ you can override the following two environment variables (e.g. in your `docker-c
 | `POCKET_BASE_URL`         | `https://getpocket.com`          |
 | `POCKET_API_CONSUMER_KEY` | `108332-4cb01719bb01deabce69438` |
 
+### Readwise Reader
+
+To expose your [Readwise Reader](https://readwise.io/read) library, set `READWISE_TOKEN` to an access
+token from [readwise.io/access_token](https://readwise.io/access_token). Readwise then appears in the
+catalog as a set of feeds by location (Inbox/New, Later, Shortlist, Feed, Archive). Each document is
+converted to an EPUB on download using the document's own content from the Reader API, so paywalled
+articles and newsletters come through intact.
+
+| Environment variable name | Default value          | Notes                                              |
+| ------------------------- | ---------------------- | -------------------------------------------------- |
+| `READWISE_TOKEN`          | _(none)_               | Required to enable the Readwise provider.          |
+| `READWISE_BASE_URL`       | `https://readwise.io`  | Override for testing.                              |
+| `READWISE_MAX_PAGES`      | `3`                    | List pages to page through per feed (100 docs/page); bounded to respect the Reader API's 20 req/min limit. |
+| `READWISE_LIST_TTL_MS`    | `60000`                | In-memory cache TTL for list responses per feed.  |
+
 ## How to use it
 
 Start by opening the homepage in a web browser to make sure the application is running as expected.

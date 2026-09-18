@@ -92,6 +92,41 @@ export class OPDSFeed {
           type,
         }).up();
     }
+    /**
+     * Add an acquisition entry that points at an arbitrary href (e.g. a
+     * provider-specific EPUB route), with a real, stable entry id. Unlike
+     * `addArticleAcquisitionEntry`, this does not assume the /content.epub
+     * route and lets the caller supply the download URL, entry id, author,
+     * and summary.
+     */
+    addAcquisitionEntry(properties: {
+        id: string,
+        title: string,
+        href: string,
+        type?: string,
+        author?: string,
+        summary?: string,
+        updated?: string,
+    }) {
+        const finalTitle = properties.title.trim() || "Untitled";
+        const entry = this.feed.ele("entry")
+            .ele("id").txt(properties.id).up()
+            .ele("title").txt(finalTitle).up()
+            .ele("updated").txt(properties.updated ?? (new Date()).toISOString()).up();
+
+        if (properties.author) {
+            entry.ele("author").ele("name").txt(properties.author).up().up();
+        }
+        if (properties.summary) {
+            entry.ele("summary", { type: "text" }).txt(properties.summary).up();
+        }
+        entry.ele("link", {
+            rel: "http://opds-spec.org/acquisition",
+            href: properties.href,
+            type: properties.type ?? "application/epub+zip",
+        }).up();
+    }
+
     toXmlString() {
         return this.feed.doc().end({ prettyPrint: true });
     }

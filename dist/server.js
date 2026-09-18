@@ -13,6 +13,7 @@ import PocketProvider from "./provider/pocket.js";
 import HackerNewsProvider from "./provider/hacker-news.js";
 import TildesProvider from "./provider/tildes.js";
 import KarakeepProvider from "./provider/karakeep.js";
+import ReadwiseProvider from "./provider/readwise.js";
 //import dotenv from 'dotenv';
 //dotenv.config();
 const dirs = xdg({
@@ -39,6 +40,7 @@ const hackerNewsProvider = new HackerNewsProvider(app, configDir);
 const pocketProvider = new PocketProvider(app, configDir);
 const tildesProvider = new TildesProvider(app, configDir);
 const karakeepProvider = new KarakeepProvider(app, configDir);
+const readwiseProvider = new ReadwiseProvider(app, configDir);
 // Catalog Root
 app.get("/opds", (req, res) => {
     const feed = new OPDSFeed({
@@ -77,6 +79,15 @@ app.get("/opds", (req, res) => {
             content: "Saved articles from your Pocket account",
         },
     ]);
+    // Only advertise Readwise when a token is configured
+    if (readwiseProvider.isConnected()) {
+        feed.addEntry({
+            title: "Readwise Reader",
+            id: "readwise",
+            link: "/opds/provider/readwise",
+            content: "Saved articles from your Readwise Reader library",
+        });
+    }
     res.type("application/xml").send(feed.toXmlString());
 });
 // Generate and serve an epub based on the 'url' query param
@@ -119,6 +130,13 @@ app.get("/", async (req, res) => {
     else {
         karakeepHtml = `<p>Not connected. Set <code>KARAKEEP_API_URL</code> and <code>KARAKEEP_API_KEY</code> to configure.</p>`;
     }
+    let readwiseHtml;
+    if (readwiseProvider.isConnected()) {
+        readwiseHtml = `<p>Connected! Using Readwise Reader.</p>`;
+    }
+    else {
+        readwiseHtml = `<p>Not connected. Set <code>READWISE_TOKEN</code> (from <a href="https://readwise.io/access_token">readwise.io/access_token</a>) to configure.</p>`;
+    }
     const body = `
   <html>
   <head>
@@ -146,6 +164,8 @@ app.get("/", async (req, res) => {
     <p>Not yet supported</h3>
     <h3>Karakeep</h3>
     ${karakeepHtml}
+    <h3>Readwise Reader</h3>
+    ${readwiseHtml}
     <h3>Pocket-compatible server at ${pocketProvider.BASE_URL}</h3>
     ${pocketHtml}
   </body>
