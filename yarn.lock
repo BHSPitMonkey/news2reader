@@ -3216,7 +3216,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"superagent@npm:^3.8.3":
+"superagent@npm:3.8.3":
   version: 3.8.3
   resolution: "superagent@npm:3.8.3"
   dependencies:
@@ -3231,6 +3231,24 @@ __metadata:
     qs: "npm:^6.5.1"
     readable-stream: "npm:^2.3.5"
   checksum: 10/7226a514ebff5aab000d4589367e28ff8e9768a522d84a8da81201a56dfa0d15e713b9508d369a4b6e5aaf814a45ca7b230fffdb6955fd34ba061c4002d61ef8
+  languageName: node
+  linkType: hard
+
+"superagent@patch:superagent@npm%3A3.8.3#~/.yarn/patches/superagent-npm-3.8.3-8bdf672d54.patch":
+  version: 3.8.3
+  resolution: "superagent@patch:superagent@npm%3A3.8.3#~/.yarn/patches/superagent-npm-3.8.3-8bdf672d54.patch::version=3.8.3&hash=956ef0"
+  dependencies:
+    component-emitter: "npm:^1.2.0"
+    cookiejar: "npm:^2.1.0"
+    debug: "npm:^3.1.0"
+    extend: "npm:^3.0.0"
+    form-data: "npm:^2.3.1"
+    formidable: "npm:^1.2.0"
+    methods: "npm:^1.1.1"
+    mime: "npm:^1.4.1"
+    qs: "npm:^6.5.1"
+    readable-stream: "npm:^2.3.5"
+  checksum: 10/d9eeb8ee01f1f1a7465f1d8e4243b6c3cba85402776aa48b63f9cf5a8b948d3296fe292b2957dba2889227f3695a8b1cbff4ff5f6fdd82452d8f24770c584a24
   languageName: node
   linkType: hard
 

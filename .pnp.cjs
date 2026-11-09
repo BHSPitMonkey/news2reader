@@ -1226,11 +1226,11 @@ const RAW_RUNTIME_STATE =
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:8bdf672d54f36156a0f721b1434bbc1348d0f0fc5e805c421e22316652d3adb4ab5ec9db167a289ec9115ad44ae048edb781152c06b39311b623662569c1a6c3#npm:3.2.7", {\
-        "packageLocation": "./.yarn/__virtual__/debug-virtual-2769557a9c/0/cache/debug-npm-3.2.7-754e818c7a-d86fd7be2b.zip/node_modules/debug/",\
+      ["virtual:0cbe4c0fbc248b521d61c137b4ce3ed51e461c6cfb678196af4fe9fd5ea2d179bb56b32a47ab6962f5bf7be8c98459810743a2426cd527c9e255b1ec1c6c1ad2#npm:3.2.7", {\
+        "packageLocation": "./.yarn/__virtual__/debug-virtual-9de52ce686/0/cache/debug-npm-3.2.7-754e818c7a-d86fd7be2b.zip/node_modules/debug/",\
         "packageDependencies": [\
           ["@types/supports-color", null],\
-          ["debug", "virtual:8bdf672d54f36156a0f721b1434bbc1348d0f0fc5e805c421e22316652d3adb4ab5ec9db167a289ec9115ad44ae048edb781152c06b39311b623662569c1a6c3#npm:3.2.7"],\
+          ["debug", "virtual:0cbe4c0fbc248b521d61c137b4ce3ed51e461c6cfb678196af4fe9fd5ea2d179bb56b32a47ab6962f5bf7be8c98459810743a2426cd527c9e255b1ec1c6c1ad2#npm:3.2.7"],\
           ["ms", "npm:2.1.3"],\
           ["supports-color", null]\
         ],\
@@ -1578,7 +1578,7 @@ const RAW_RUNTIME_STATE =
           ["mime", "npm:2.6.0"],\
           ["q", "npm:1.5.1"],\
           ["rimraf", "npm:2.7.1"],\
-          ["superagent", "npm:3.8.3"],\
+          ["superagent", "patch:superagent@npm%3A3.8.3#~/.yarn/patches/superagent-npm-3.8.3-8bdf672d54.patch::version=3.8.3&hash=956ef0"],\
           ["underscore", "npm:1.13.6"],\
           ["uslug", "npm:1.0.4"]\
         ],\
@@ -3744,12 +3744,12 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["superagent", [\
-      ["npm:3.8.3", {\
-        "packageLocation": "./.yarn/cache/superagent-npm-3.8.3-8bdf672d54-7226a514eb.zip/node_modules/superagent/",\
+      ["patch:superagent@npm%3A3.8.3#~/.yarn/patches/superagent-npm-3.8.3-8bdf672d54.patch::version=3.8.3&hash=956ef0", {\
+        "packageLocation": "./.yarn/cache/superagent-patch-0cbe4c0fbc-d9eeb8ee01.zip/node_modules/superagent/",\
         "packageDependencies": [\
           ["component-emitter", "npm:1.3.0"],\
           ["cookiejar", "npm:2.1.4"],\
-          ["debug", "virtual:8bdf672d54f36156a0f721b1434bbc1348d0f0fc5e805c421e22316652d3adb4ab5ec9db167a289ec9115ad44ae048edb781152c06b39311b623662569c1a6c3#npm:3.2.7"],\
+          ["debug", "virtual:0cbe4c0fbc248b521d61c137b4ce3ed51e461c6cfb678196af4fe9fd5ea2d179bb56b32a47ab6962f5bf7be8c98459810743a2426cd527c9e255b1ec1c6c1ad2#npm:3.2.7"],\
           ["extend", "npm:3.0.2"],\
           ["form-data", "npm:2.5.1"],\
           ["formidable", "npm:1.2.6"],\
@@ -3757,7 +3757,7 @@ const RAW_RUNTIME_STATE =
           ["mime", "npm:1.6.0"],\
           ["qs", "npm:6.11.2"],\
           ["readable-stream", "npm:2.3.8"],\
-          ["superagent", "npm:3.8.3"]\
+          ["superagent", "patch:superagent@npm%3A3.8.3#~/.yarn/patches/superagent-npm-3.8.3-8bdf672d54.patch::version=3.8.3&hash=956ef0"]\
         ],\
         "linkType": "HARD"\
       }]\
