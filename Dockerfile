@@ -1,4 +1,4 @@
-FROM node:22
+FROM node:26
 
 LABEL org.opencontainers.image.source=https://github.com/BHSPitMonkey/news2reader
 LABEL org.opencontainers.image.description=" Serve online articles directly to your e-reader using OPDS"
@@ -6,7 +6,6 @@ LABEL org.opencontainers.image.licenses=MIT
 
 WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
-COPY .yarn/patches/ ./.yarn/patches/
 
 RUN corepack enable
 RUN yarn install --network-timeout 600000

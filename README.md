@@ -61,7 +61,7 @@ You will need to mount a config directory at `/root/.config/news2reader/` in the
 
 ### Run via Node.js
 
-(Tested using Node 22.x)
+Requires Node 26 or newer (tested using Node 26.x)
 
 ```shell
 yarn install
