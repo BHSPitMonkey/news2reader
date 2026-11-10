@@ -14,7 +14,7 @@
     "./src/provider/pocket": "./dist/src/provider/pocket.js"
   },
   "engines": {
-    "node": ">= 22.0.0"
+    "node": ">= 26.0.0"
   },
   "dependencies": {
     "@folder/xdg": "^4.0.1",
@@ -29,9 +29,12 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.21",
-    "@types/node": "^22.0.3",
+    "@types/node": "^26.0.0",
     "concurrently": "^8.2.2",
     "nodemon": "^3.1.10",
     "typescript": "^5.8.3"
+  },
+  "resolutions": {
+    "superagent@npm:^3.8.3": "npm:^10.4.2"
   }
 }

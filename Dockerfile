@@ -1,4 +1,4 @@
-FROM node:22
+FROM node:26
 
 LABEL org.opencontainers.image.source=https://github.com/BHSPitMonkey/news2reader
 LABEL org.opencontainers.image.description=" Serve online articles directly to your e-reader using OPDS"
